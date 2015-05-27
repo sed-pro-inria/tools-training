@@ -1,0 +1,1014 @@
+
+# Version control
+
+<img src="images/git_commit.png">
+
+## Git, a distributed Version Control Manager
+
+Version Control Manager:
+  - Source code is frequently **committed** into Git database, and each
+**commit** can be retrieved, shared with team.
+  - Keep, search your code history.
+  - Develop software in team efficiently.
+
+Distributed:
+  - Unlike **SVN** which is **centralized**, **Git** is **distributed**. It
+means that Git does not require to use one central repository, but multiple ones
+may be used.
+  - When one downloads source code from a Git repository, it creates a new Git
+repository, with the full database. There is no conceptual difference between
+the two repositories.
+  - Offline work possibility
+  - Multiple possible workflows to collaborate with other developers.
+
+**Git** make it easy to work with **branches**.
+  - Branches are easy to create, merge and destroy.
+  - Create temporary branches to develop a feature is encouraged.
+
+**Git** has a few core concepts that must be understood.
+   - Without knowing these core concept, using Git is frustrating and painful.
+   - Knowing them, using Git is powerful and easy.
+
+Thanks to Git's simplicity for creating new repositories and managing branches,
+a workflow adapted to your team
+may be chosen. For example:
+   - working with a central repository and contributing into branches (small
+private teams);
+   - working with forks and contributing with pull requests (large teams with
+external contributors).
+
+This presentation deals with the core concepts of Git, so as to make its
+adoption easier.
+
+## Local version control (only one Git repository)
+
+We start working on a repository alone.
+
+In this sections, we will learn the core concepts of Git:
+    - staging area,
+    - commits,
+    - branches.
+
+Start by creating a new empty directory to experiment with Git:
+
+
+    from os import makedirs, chdir, curdir, walk, sep
+    from os.path import expanduser, isdir, abspath, join, relpath, basename
+    from shutil import rmtree
+    
+    workdir = expanduser('~/git-training')
+    
+    # Remove possible existing working, and starts with a fresh one.
+    if isdir(workdir):
+        rmtree(workdir)
+    makedirs(workdir)          
+    
+    def changedir(directory):
+        """Set up a directory relative to workdir"""
+        directory = abspath(join(workdir,directory))
+        if not isdir(directory):
+            makedirs(directory)
+        chdir(directory)
+        print("We are in directory " + directory)
+        
+    # The directory that will contain the Git repository
+    changedir('repo')
+
+    We are in directory /Users/stentzel/git-training/repo
+
+
+### The init command
+
+A Git **repository** is created in the current directory using the **init**
+command.
+
+This will create a `.git` hidden directory, where Git stores its database.
+
+
+    %%bash
+    
+    git init
+    ls -la
+
+    Initialized empty Git repository in /Users/stentzel/git-training/repo/.git/
+    total 0
+    drwxr-xr-x   3 stentzel  sed  102 24 nov 10:59 .
+    drwxr-xr-x   3 stentzel  sed  102 24 nov 10:59 ..
+    drwxr-xr-x  10 stentzel  sed  340 24 nov 10:59 .git
+
+
+You can now start developing. For example, we may write "First Line" in a file
+called ``foo.txt``. But in practice, we would probably want to write some real
+source code.
+
+
+    %%bash
+    
+    echo "First line" > foo.txt
+
+### The staging area and the add commmand
+
+We ask Git to track changes in the file ``foo`` using the **add** command
+
+
+    %%bash
+    
+    git add foo.txt
+
+This command does two things:
+  - Because this is the first time we use **add** on foo.txt, it tells Git to
+track changes of this file.
+- The second thing is more subtle. **add** adds the file and its content to what
+is called the **staging area**, which is in the **.git** directory. Later, we
+will use the **commit** command to commit ``foo.txt`` into Git database. What
+Git saves to its database is not the content of the ``foo.txt`` file, located in
+the ``~/git-training/repo`` directory: it saves the content of the file as it is
+in the **staging_area**, which may differ.
+
+Let us see it in action on our example.
+
+Until now, we have:
+  - written ``First line`` in ``foo.txt``,
+  - run the **add** command on ``foo.txt``.
+
+So:
+  - ``foo.txt`` in the working directory contains ``First line``.
+  - ``foo.txt`` in the staging area contains ``First line`` as well.
+
+Now suppose that we add another line in ``foo.txt``.
+
+
+    %%bash
+    
+    echo "Second line" >> foo.txt
+
+Now:
+  - ``foo.txt`` in the working directory contains ``First line`` and ``Second
+line``.
+  - ``foo.txt`` in the staging area still contains ``First line`` only.
+
+If we commit ``foo.txt`` into the Git database now, using the **commit**
+command, it will commit the file as it is in the staging area.
+
+To update the staging area, we use the **add** command again, which copies
+``foo.txt`` from the working directory into the staging area.
+
+
+    %%bash
+    
+    git add foo.txt
+
+Using the staging area, we can choose and prepare exactly what to commit. For
+example, we may want to commit unrelated changes in our files in two separate
+commits. The staging area allows us to do it easily.
+
+### The commit command
+
+Now, ``foo.txt`` version of the staging area will be committed into the Git
+database.
+
+A message is written with the commit, to help remember its meaning.
+
+
+    %%bash
+    
+    git commit -m 'Two lines in the new foo.txt file.'
+
+    [master (root-commit) 656e8cd] Two lines in the new foo.txt file.
+     1 file changed, 2 insertions(+)
+     create mode 100644 foo.txt
+
+
+### The diff and status commands
+
+Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
+**status** commands
+
+
+    %%bash
+    
+    echo 'Third line' >> foo.txt
+
+
+    %%bash
+    
+    git diff
+
+    diff --git a/foo.txt b/foo.txt
+    index 7d91453..6da4d3e 100644
+    --- a/foo.txt
+    +++ b/foo.txt
+    @@ -1,2 +1,3 @@
+     First line
+     Second line
+    +Third line
+
+
+
+    %%bash
+    
+    git status
+
+    On branch master
+    Changes not staged for commit:
+      (use "git add <file>..." to update what will be committed)
+      (use "git checkout -- <file>..." to discard changes in working directory)
+    
+    	modified:   foo.txt
+    
+    no changes added to commit (use "git add" and/or "git commit -a")
+
+
+Stage the file, and observe the new output of **diff** and **status** commands
+
+
+    %%bash
+    
+    git add foo.txt
+
+
+    %%bash
+    
+    git diff
+
+
+    %%bash
+    
+    git diff --cached
+
+    diff --git a/foo.txt b/foo.txt
+    index 7d91453..6da4d3e 100644
+    --- a/foo.txt
+    +++ b/foo.txt
+    @@ -1,2 +1,3 @@
+     First line
+     Second line
+    +Third line
+
+
+
+    %%bash
+    
+    git status
+
+    On branch master
+    Changes to be committed:
+      (use "git reset HEAD <file>..." to unstage)
+    
+    	modified:   foo.txt
+    
+
+
+Commit the file.
+
+
+    %%bash
+    
+    git commit -m 'Add third line to foo.txt'
+
+    [master a4d45ae] Add third line to foo.txt
+     1 file changed, 1 insertion(+)
+
+
+### The log command
+
+The **log** command prints an history of all the commits.
+
+
+    %%bash
+    git log
+
+    commit a4d45aefa80461e46df6461862c4dc57d8107ae2
+    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
+    Date:   Mon Nov 24 11:00:03 2014 +0100
+    
+        Add third line to foo.txt
+    
+    commit 656e8cda032572ffae4e4b800fcb99c2cf3516bd
+    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
+    Date:   Mon Nov 24 10:59:58 2014 +0100
+    
+        Two lines in the new foo.txt file.
+
+
+
+    %%bash
+    git log -p
+
+    commit a4d45aefa80461e46df6461862c4dc57d8107ae2
+    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
+    Date:   Mon Nov 24 11:00:03 2014 +0100
+    
+        Add third line to foo.txt
+    
+    diff --git a/foo.txt b/foo.txt
+    index 7d91453..6da4d3e 100644
+    --- a/foo.txt
+    +++ b/foo.txt
+    @@ -1,2 +1,3 @@
+     First line
+     Second line
+    +Third line
+    
+    commit 656e8cda032572ffae4e4b800fcb99c2cf3516bd
+    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
+    Date:   Mon Nov 24 10:59:58 2014 +0100
+    
+        Two lines in the new foo.txt file.
+    
+    diff --git a/foo.txt b/foo.txt
+    new file mode 100644
+    index 0000000..7d91453
+    --- /dev/null
+    +++ b/foo.txt
+    @@ -0,0 +1,2 @@
+    +First line
+    +Second line
+
+
+### The checkout command
+
+The **checkout** command restores a previous commit. We are in a ``detached
+HEAD`` state, which will be explained later in the ``Git branches`` section.
+
+
+    %%bash
+    git checkout master^
+
+    Note: checking out 'master^'.
+    
+    You are in 'detached HEAD' state. You can look around, make experimental
+    changes and commit them, and you can discard any commits you make in this
+    state without impacting any branches by performing another checkout.
+    
+    If you want to create a new branch to retain commits you create, you may
+    do so (now or later) by using -b with the checkout command again. Example:
+    
+      git checkout -b new_branch_name
+    
+    HEAD is now at 656e8cd... Two lines in the new foo.txt file.
+
+
+
+    %%bash
+    cat foo.txt
+
+    First line
+    Second line
+
+
+
+    %%bash
+    git checkout master
+
+    Previous HEAD position was 656e8cd... Two lines in the new foo.txt file.
+    Switched to branch 'master'
+
+
+
+    %%bash
+    cat foo.txt
+
+    First line
+    Second line
+    Third line
+
+
+### Git commits
+
+To take advantage of all the powerful features of Git, it is important to
+underdand what a **commit** actually is.
+
+The first thing to know is that Git has stored in its database 2 commit objects,
+each of them containing a complete version of the file ``foo.txt``.
+  - For the first commit, Git has stored in its database a commit object
+containing ``First line`` and ``Second line``.
+  - For the second commit, Git has stored in its database a commit object
+containing not the difference between the two versions, but the whole file:
+``First line`` and ``Second line`` (hence duplicated in Git's database) and
+``Third line``.
+  - After the second commit, ``First line`` **is** duplicated in the 2 different
+commit objects in Git's database.
+
+Note that for performance, Git has the ability to efficiently compress its
+database and stor differences only (especially during network communication),
+but the model is to store the whole content of files for each commit.
+
+This yields a very simple model. A commit contains the directories and files we
+have commited (called ``tree`` and ``blob`` in Git), plus some metadata.
+
+In Git, a commit object contains:
+  - One parent commit (or more).
+  - The (root) tree (which itself contains trees and blobs).
+  - The commit message.
+  - The author.
+  - The commit date.
+
+### The SHA-1
+
+Git uses the **SHA-1** cryptographic hash function to identify each object
+(**commit**, **tree**, **blob**) with a hash value. Such a hash value may look
+like the following one:  ``0e1e060688a560015614cf7ec4b77d8a0df07c2f``.
+
+The hash value is computed from the object's content. It is almost impossible
+that **SHA-1** gives the same hash value for two different contents. The risk of
+collision is almost zero, and we consider it to be zero.
+
+Each hash value identifies only one commit. It also identifies all the
+directories and files that belong to the commit. Note that parent commits are
+also part of the commit:  two commits sharing the same files and directories,
+but with different commit parents, will have different hash values.
+
+Note:
+  - if two developpers create exactly the same commit on two different
+computers, the hash value will be the same,
+  - we know that two commits are different by only comparing their hash values,
+  - hash value is very fast to compute: if a whole tree in a commit has not
+changed, Git does not have to recompute it.
+
+### Git branches
+
+Suppose we now want to try developing a new feature in our code, while
+continuing our previous work on ``foo.txt``.
+
+Git encourages creating a branch for this.
+
+A branch is created with the **branch** command, followed by a branch **name**:
+
+
+    %%bash
+    
+    git branch bar
+
+Without any argument, the **branch** command lists all the branches and marks
+the current one with an asterisk.
+
+
+    %%bash
+    
+    git branch
+
+      bar
+    * master
+
+
+The **checkout** command allows you to switch to another branch:
+
+
+    %%bash
+    
+    git checkout bar
+    git branch
+
+    * bar
+      master
+
+
+    Switched to branch 'bar'
+
+
+Now, let us develop something in the two branches:
+
+
+    %%bash
+    
+    echo 'First line' > bar.txt
+    git add bar.txt
+    git commit -m 'First line of bar.txt'
+    
+    echo 'Second line' >> bar.txt
+    git add bar.txt
+    git commit -m 'Second line of bar.txt'
+    
+    git checkout master
+    echo "Fourth line" >> foo.txt
+    git add foo.txt
+    git commit -m  'Fourth line of foo.txt'
+    
+    echo "Fifth line" >> foo.txt
+    git add foo.txt
+    git commit -m 'Fifth line of foo.txt'
+    
+    git checkout bar
+    echo 'Third line' >> bar.txt
+    git add bar.txt
+    git commit -m 'Third line of bar.txt'
+
+    [bar f788c0f] First line of bar.txt
+     1 file changed, 1 insertion(+)
+     create mode 100644 bar.txt
+    [bar cf23407] Second line of bar.txt
+     1 file changed, 1 insertion(+)
+    [master b25e427] Fourth line of foo.txt
+     1 file changed, 1 insertion(+)
+    [master c677188] Fifth line of foo.txt
+     1 file changed, 1 insertion(+)
+    [bar 0b8ea54] Third line of bar.txt
+     1 file changed, 1 insertion(+)
+
+
+    Switched to branch 'master'
+    Switched to branch 'bar'
+
+
+### The merge command
+
+We merge the work of the two branches. More specifically, we merge the **bar**
+branch into the **master** branch
+
+
+    %%bash
+    
+    git checkout master
+    git merge bar
+
+    Merge made by the 'recursive' strategy.
+     bar.txt | 3 +++
+     1 file changed, 3 insertions(+)
+     create mode 100644 bar.txt
+
+
+    Switched to branch 'master'
+
+
+Because there is no conflict, the merge is performed automatically. In case of
+confict (same lines of a file modified in both branches):
+   - the merge operation stops,
+   - the developper edits the conflicted files, and solves the conflict,
+   - the developper commits the merged files.
+
+### What Git branches are
+
+Edit the file ``~/.gitconfig`` and add the content:
+
+    [alias]
+      graph = log --graph --full-history --all --color
+--pretty=tformat:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
+
+This will addde a useful **gr** command to Git, that displays a colored graph of
+the branches.
+
+
+    %%bash
+    
+    git graph
+
+    *   [31mc2ae6ee	[32m (HEAD, master)[0m Merge branch 'bar' [33m(Cécile Stentzel)[0m
+    [31m|[m[32m\[m  
+    [31m|[m * [31m0b8ea54	[32m (bar)[0m Second line of bar.txt [33m(Cécile Stentzel)[0m
+    [31m|[m * [31mcf23407	[32m[0m Second line of bar.txt [33m(Cécile Stentzel)[0m
+    [31m|[m * [31mf788c0f	[32m[0m First line of bar.txt [33m(Cécile Stentzel)[0m
+    * [32m|[m [31mc677188	[32m[0m Fifth line of foo.txt [33m(Cécile Stentzel)[0m
+    * [32m|[m [31mb25e427	[32m[0m Fourth line of foo.txt [33m(Cécile Stentzel)[0m
+    [32m|[m[32m/[m  
+    * [31ma4d45ae	[32m[0m Add third line to file.txt [33m(Cécile Stentzel)[0m
+    * [31m656e8cd	[32m[0m Two lines in the new foo.txt file. [33m(Cécile Stentzel)[0m
+
+
+All the commits form a chain, in which each commit is linked to its parent.
+
+Creating a branch means having two commits with the same parent, while merging
+means creating a commit with two parents.
+
+We can now give a simple definition of a branch : their are just a
+reference/pointer/name for a given commit.
+
+Two special branches are:
+   - **master**, the original branch when a repository is created. That's a
+branch like the others.
+   - **HEAD**, the current branch, which is updated after each commit.
+
+The situation of a **detached HEAD** seen above means restoring an old commit,
+while leaving HEAD pointing to the commit we were on.
+
+Note: with this knowledge on commits and branches, some Git features not
+demonstrated here will be easy to understand:
+    - rebase
+    - fast-forward
+    - tag
+
+## Centralized version control
+
+Now that we have learned how to work with a single Git repository, we will learn
+how to send/receive commits between two Git repositories
+
+In this section, we will assume a workflow with two developpers:
+    - Alice,
+    - Bob,
+
+both of them having their own repository on their computer:
+    - Alice's repository A on her computer,
+    - Bob's repository B on his computer.
+
+and a central repository on a computer which both Alice and Bob can communicate
+with:
+    - central repository C on a "server".
+
+For simplicity, we will demonstrate the commands on the same machine, using Git
+**file://** protocol. However, Git commands would be **exactly the same**, but
+using instead the **ssh://** or **https://** protocols.
+
+Note that configuring a "server" machine to host a Git repository and managing
+user permissions, backup, availability, Web views of the repository, etc. is not
+easy. Forges like **Inria's GForge**, **GitHub**, **Bitbucket**, **Gitorious**
+should be preferred.
+
+
+    changedir(workdir)
+
+### The --bare option of the init command
+
+We start by creating a central repository.
+
+There is a subtlety. Suppose we create a git repository in ``~/git-
+training/central`` and that someone else edits files in this Git repository.
+
+It is possible that someone else sends commits (in Git, this is called **push**)
+to this repository, which would be stored in ``~/git-training/central/.git``.
+Then Git's database and working copy would differ.
+
+To avoid this situtation, Git provides the **--bare** option to **init**. It
+creates a Git repository, but without a working copy. Nobody can **commit**
+directly into this repository, but only **push** commits.
+
+Never **push** commits to a Git repository that is not **bare**, to avoid
+inconsistencies with its working copy.
+
+By convention, **bare** repositories are suffixed with **.git**, even i it is
+not necessary.
+
+
+    %%bash
+    
+    git init --bare central.git
+    ls -l central.git
+
+Alice clones the central repository:
+
+
+    %%bash
+    
+    git clone file://$PWD/central.git alice
+
+Alice enters her Git repository
+
+
+    changedir('alice')
+
+### The remote command
+
+Without argument, the *remote* command lists the **remote** repositories Git
+knows about:
+
+
+    %%bash
+    
+    git remote
+
+When the central repository has been cloned, Git has given it the name
+**origin**, by convention.
+
+Later, we will learn how to register additionnal remote repositories.
+
+Alice works and commits into her repository:
+
+
+    %%bash
+    
+    echo 'First line' > foo.txt
+    git add foo.txt
+    git commit -m 'First line of foo.txt'
+    
+    echo 'Second line' >> foo.txt
+    git add foo.txt
+    git commit -m 'Second line of foo.txt'
+
+### The push command
+
+Now, Alice wants to send her commits to the central repository, so that Bob can
+get them.
+
+To do so, she uses the **push** command, whose arguments are:
+
+    git push <remote_name> <local_branch>:<remote_branch>
+
+The remote_name is **origin**, Alice pushes the **master** branch of her
+repository to the **master** branch of the central repository:
+
+
+
+    %%bash
+    
+    git push origin master:master
+
+
+    changedir(workdir)
+
+Bob now clones the central repository too:
+
+
+    %%bash
+    
+    git clone file://$PWD/central.git bob
+
+
+    changedir('bob')
+
+Doing so, he fetches Alice's work.
+
+
+    %%bash
+    
+    git log
+
+Bob makes some changes, commits and pushes:
+
+
+    %%bash
+    
+    echo "Third line" >> foo.txt
+    git add foo.txt
+    git commit -m "Third line to foo.txt"
+    git push origin master:master
+
+### The fetch command
+
+
+    changedir('alice')
+
+Alice wants to get Bob's commits. She
+uses the **fetch** command, which donwloads all the commits of all branches from
+a remote repository.
+
+
+    %%bash
+    
+    git fetch origin
+
+### Remote branches
+
+The git **branch** command lists all branches of Alice's repository, also known
+as local branches:
+
+
+    %%bash
+    
+    git branch
+
+But where are the **central** repository branches which have just been
+downloaded?
+
+Adding the **-a** option to the **branch** command reveals them:
+
+
+    %%bash
+    
+    git branch -a
+
+``remotes/central/master.git`` is called a **remote branch**.
+
+A **remote branch** is a read-only branch that reflects the state of a branch of
+a remote repository. If the branch changes on the remote repository, use
+**fetch** again to refresh it.
+
+To get all commits of ``remotes/central/master`` **remote branch** into the
+**master** branch, merge it:
+
+
+    %%bash
+    
+    git merge remotes/origin/master
+
+Note: **fetch** and **merge** operations can be accomplished in one command,
+**pull**:
+
+    git pull <remote_name> <remote_branch>:<local_branch>
+
+### Pushing a feature branch
+
+While Alice and Bob are working on the master branch, Alice wants to develop an
+experimental feature.
+
+She creates a branch for this, and works in it:
+
+
+    %%bash
+    
+    git branch exp
+    git checkout exp
+    
+    echo "First line" > bar.txt
+    git add bar.txt
+    git commit -m 'First line of bar.txt'
+    
+    echo "Second line" >> bar.txt
+    git add bar.txt
+    git commit -m "Second line in bar.txt"
+
+Alice then pushes her branch to a similarly named branch of the central
+repository:
+
+
+    %%bash
+    
+    git push origin exp:exp
+
+### Tracking branch
+
+At the same time, Bob has worked on the master branch:
+
+
+    changedir('bob')
+
+
+    %%bash
+    
+    echo "Third line" >> foo.txt
+    git add foo.txt
+    git commit -m "Third line in foo.txt"
+    
+    echo "Fourth line" >> foo.txt
+    git add foo.txt
+    git commit -m "Fourth line in foo.txt"
+
+Bob wants to see Alice's work on the ``exp`` branch. He downloads all branches
+of the central repository:
+
+
+    %%bash
+    
+    git fetch
+    git branch -a
+
+Bob has remote branch ``remotes/central/exp``, but how to work with it?
+
+Adding the **--track** option to the **checkout** command makes Git create a
+**tracking branch**:
+
+
+    %%bash
+    git checkout --track origin/exp
+
+A tracking branch is our local copy of a remote branch. Unlike the remote
+branch, we have write access to it.
+
+Tracking branches can also be used to call the **pull** and **push** command
+without arguments.
+
+Note that Alice and Bob can work on the ``exp`` branch without changing anything
+to the ``master`` branch.
+  - if ``exp`` was not a good idea, the branch can be dropped,
+  - if ``exp`` is a good idea, it may be merged into the ``master`` branch.
+
+### Visualizing branches
+
+Bob  helps Alice to develop the ``exp`` branch by making a new commit:
+
+
+    %%bash
+    
+    echo "Third line" >> bar.txt
+    git add bar.txt
+    git commit -m "Third line in bar.txt"
+
+At this point, it is instructive to visualize the different branches:
+
+
+    %%bash
+    
+    git graph
+
+We note that:
+    - Bob's master branch has 2 more commits than the central one.
+    - Bob master branch has 1 more commit that the central one.
+
+The verbose option of **branch** is useful to see tracking branches:
+
+
+    %%bash
+    git branch -avv
+
+Bob pushes the commits of the two branches.
+
+
+    %%bash
+    git push origin exp:exp
+    git push origin master:master
+
+
+    %%bash
+    
+    git checkout master
+    
+    git push origin master:master
+    git graph
+
+Finally, the ``exp`` branch is merged into master. The merge commit is pushed to
+the central repository, and the branch is deleted:
+
+
+    %%bash
+    
+    # We already are in the master branch
+    
+    git merge exp
+    git push origin master:master
+    git branch -d exp
+    git graph
+
+## Distributed workflow          
+
+Committing to a central repository is okay for small teams where developpers
+know and trust each other
+
+For larger projects, it is blocking and dangerous to give write access to the
+central repository to an external contributor.
+
+Git solves this problem with **forks**.
+
+When a developper wants to contribute to a project, he/she forks the original
+bare repository. It means that the developper gets his own bare repository. In
+this repository, he develops a feature in a branch. When the work is done, he
+asks an administrator to pull the feature branch of his repository to the master
+branch of the central repository.
+
+This is called a **pull request**.
+
+Let us see this in practice by adding **Emma** as a developper to our previous
+example.
+
+
+    changedir(workdir)
+
+Emma starts by forking the central repository to her own bare repository.
+
+Note: this is a functionnality provided out of the box by GitHub
+
+Then Emma clones her bare public repository.
+
+
+    %%bash
+    
+    git clone --bare central.git central-emma-fork.git
+    
+    git clone central-emma-fork.git emma
+
+
+    changedir('emma')
+
+Emma creates a topic branch, works on it, and pushes it to her public
+repository:
+
+
+    %%bash
+    
+    git branch baz
+    git checkout baz
+    
+    echo "First line" > baz.txt
+    git add baz.txt
+    git commit -m 'First line in baz.txt'
+    
+    echo "Second line" >> baz.txt
+    git add baz.txt
+    git commit -m 'Second line in baz.txt'
+    
+    git push origin baz:baz
+
+
+    changedir('alice')
+
+The next step for Emma is to ask Alice to get **baz** branch of **central-emma-
+for** pulled into **master** branch for **central**.
+
+Note: GitHub provides functionnality to request a pull, and review the
+associated code.
+
+Alice fetches Emma's bare repository. To do this, she first adds Emma's bare
+repository to the list of her remote repositories.
+
+
+    %%bash
+    
+    git remote add emma file://$HOME/git-training/central-emma-fork.git
+    git fetch emma
+
+At this point, Alice and Emmma can interact with each other to add more commits
+to the ``baz`` branch. When her work is done, Alice merges it to ``master``, and
+``pushes``
+
+
+    %%bash
+    
+    git checkout master
+    git merge emma/baz
+    git push origin master:master
+
+## References
+
+> http://www.git-scm.com/docs
+
+> http://githowto.com
+
+> "Version Control with Git, Powerful tools and techniques for collaborative
+software development" By Jon Loeliger, Matthew McCullough
