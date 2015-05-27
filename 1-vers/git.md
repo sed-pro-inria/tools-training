@@ -5,6 +5,18 @@
 
 ## Git, a distributed Version Control Manager
 
+Version control means keeping track of code evlolution by recoding
+the code's state after each meaningful change. This is useful:
+  - To cancel a non-working modification
+  - To perform regression tests / continuous integratino
+
+The database where the different states of the code are recorded can be:
+  - Local: the project has only one developer
+  - Centralised: it is available on a server but developers do not
+receive it when the get the project's sources (cvs, svn).
+  - Distributed: every developer that has the sources also has the full code
+history (git, mercurial, darcs).
+
 Version Control Manager:
   - Source code is frequently **committed** into Git database, and each
 **commit** can be retrieved, shared with team.
@@ -21,7 +33,13 @@ the two repositories.
   - Offline work possibility
   - Multiple possible workflows to collaborate with other developers.
 
-**Git** make it easy to work with **branches**.
+Some terminology:
+  - Repository: the vesion-controlled project and optionally the database
+containing the project's history.
+  - Commit: one record of the code's state in the project's history.
+  - Branch: maintain several versions of the project in parallel
+ 
+**Git** makes it easy to work with **branches**.
   - Branches are easy to create, merge and destroy.
   - Create temporary branches to develop a feature is encouraged.
 
@@ -44,7 +62,7 @@ adoption easier.
 
 We start working on a repository alone.
 
-In this sections, we will learn the core concepts of Git:
+In this section, we will learn the core concepts of Git:
     - staging area,
     - commits,
     - branches.
@@ -106,78 +124,156 @@ source code.
     
     echo "First line" > foo.txt
 
-### The staging area and the add commmand
+### The add, commit and log commands
 
-We ask Git to track changes in the file ``foo`` using the **add** command
-
+To record (commit) the previous changes to Git's database, do as follows:
 
     %%bash
-    
+
     git add foo.txt
+    git commit -m "Initial commit."  
 
-This command does two things:
-  - Because this is the first time we use **add** on foo.txt, it tells Git to
-track changes of this file.
-- The second thing is more subtle. **add** adds the file and its content to what
-is called the **staging area**, which is in the **.git** directory. Later, we
-will use the **commit** command to commit ``foo.txt`` into Git database. What
-Git saves to its database is not the content of the ``foo.txt`` file, located in
-the ``~/git-training/repo`` directory: it saves the content of the file as it is
-in the **staging_area**, which may differ.
+The **add** command tells Git to track changes in the file ``foo.txt``
+and says that the current content of this file should be commited by
+the next **commit** command.
 
-Let us see it in action on our example.
+The **commit** command itself then records (commits) all the added
+changes to git's database and associates a few metadata to this
+set of changes.
 
-Until now, we have:
-  - written ``First line`` in ``foo.txt``,
-  - run the **add** command on ``foo.txt``.
+The argument of -m is a commit message, that is, a description of the
+commited change. The commit message is mandatory. If -m is not given,
+the **commit** command will open an editor where the commit message
+should be typed.
 
-So:
-  - ``foo.txt`` in the working directory contains ``First line``.
-  - ``foo.txt`` in the staging area contains ``First line`` as well.
-
-Now suppose that we add another line in ``foo.txt``.
-
+To make sure things have been properly commited, one may use the
+**log** command:
 
     %%bash
-    
-    echo "Second line" >> foo.txt
 
-Now:
-  - ``foo.txt`` in the working directory contains ``First line`` and ``Second
-line``.
-  - ``foo.txt`` in the staging area still contains ``First line`` only.
+    git log
 
-If we commit ``foo.txt`` into the Git database now, using the **commit**
-command, it will commit the file as it is in the staging area.
-
-To update the staging area, we use the **add** command again, which copies
-``foo.txt`` from the working directory into the staging area.
-
+As can be seen, the metadata associated with the commit includes its
+author. However, the name or e-mail address printed at the moment
+may not look so pretty. Here is how to improve this for future
+commits: 
 
     %%bash
-    
+
+    git config --global user.name "Prénom Nom"
+    git config --global user.email prenom.nom@inria.fr
+
+It is even possible to fix the authorship of our previous commit:
+
+    %%bash
+
+    git commit --amend --reset-author    
+And let's make sure this actually worked:
+
+    %%bahs
+
+    git log
+
+## How it works: working copy, staging area (index) and database.
+
+Woking copy and database are conceps which are well known in other
+revision control systems. To these, Git adds a third zone, the
+staging area. It is an intermediary place where changes go before
+being commited to Git's database.
+
+Having this third area may seem odd at first, but it turns out to be
+useful e.g. to seperate commits, as we will see.
+
+Suppose we add two lines to foo.xtx:
+
+    %%bash
+
+    echo "Third line" >> oo.txt
+    echo "Fourth line" >> foo.txt
+
+But then we realise that these two lines really represent two distinct
+changes and should thus be commited separately.
+
+Git makes it possible to achieve this thanks to its index or staging
+area, like this:
+
+    %%bash
+
+    git add -p foo.txt
+
+And choose 'e' to edit the hunk, then emove the line
+
++Fourth line
+
+so that the only +line is +Tird line.
+
+To make sure only the third line has been added to the index and will
+thus be commited, use the **dif** command as ollows:
+
+    %%bash
+    git diff --cached
+
+Before continuing, see how we now have three different versions of
+foo.txt:
+
+- One in the working copy (4 lines)
+- One in the index (3 lines)
+- One in the database (2 lines)
+
+Let's commit what has been staged:
+
+    %%bash
+
+    git commit -m "Second commit" 
+
+Let's make sure the commit has worked:
+
+    %%bash
+
+    git log
+
+And note that the staging area is now empty:
+
+    %%bash
+
+    git diff --cached
+
+We can now commit our second change to foo.txt:
+
+    %%bash
+
     git add foo.txt
+    git commit -m ""Third commit 
 
-Using the staging area, we can choose and prepare exactly what to commit. For
-example, we may want to commit unrelated changes in our files in two separate
-commits. The staging area allows us to do it easily.
+Two remarks are due here:
 
-### The commit command
+1. The example we have jsut seen to understand why the staging area is useful is quite
+artificial. It is however rather imortant, because the situation
+it describes can happen quite a lot inpractice. For instance, one fixes
+typos while adding a feature to a program. The new feature and tye
+typo fixups could or sure be commited together, but doing two
+distinct ommits is considered better practice because it gives a
+cleaner history. In such a situation, the -p flag to the add
+command turns out to be especially useful. Moreover, since the
+changes happenmost of the time in different hunks, it will be easier
+to use the interactive **add** in sch situations tan in the one above,
+since it will not require any manual hunk edition as before.
 
-Now, ``foo.txt`` version of the staging area will be committed into the Git
-database.
+2. The three areas that have just been introduced (working copy,
+staging area and commit database) are of crucial importance. Indeed,
+almost all git commands either
+manipulate one of these areas or transfer content between two
+of them and understanding Git in terms of how the commands work on areas
+turns out to be especially helpful (if not fundamental) in practice.
 
-A message is written with the commit, to help remember its meaning.
+Moreover, for one specific command, its arguments may change the areas
+it affects. As an example, git commit transfers content from the
+staging area to the database, but with the -a argument, the same command
+will transfer all the uncommited (and unstaged) changes directly from
+the working copy to the database and leave the staging area unmodified.
 
-
-    %%bash
-    
-    git commit -m 'Two lines in the new foo.txt file.'
-
-    [master (root-commit) 656e8cd] Two lines in the new foo.txt file.
-     1 file changed, 2 insertions(+)
-     create mode 100644 foo.txt
-
+Exercise: can you explain what **log** and **add** do in terms of
+the three areas?
 
 ### The diff and status commands
 
@@ -187,7 +283,7 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
 
     %%bash
     
-    echo 'Third line' >> foo.txt
+    echo 'Fifth line' >> foo.txt
 
 
     %%bash
@@ -219,7 +315,8 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     no changes added to commit (use "git add" and/or "git commit -a")
 
 
-Stage the file, and observe the new output of **diff** and **status** commands
+Stage the file, and observe the new output of the **diff** and **status**
+commands
 
 
     %%bash
@@ -264,7 +361,7 @@ Commit the file.
 
     %%bash
     
-    git commit -m 'Add third line to foo.txt'
+    git commit -m 'Add fifth line to foo.txt'
 
     [master a4d45ae] Add third line to foo.txt
      1 file changed, 1 insertion(+)
@@ -325,6 +422,13 @@ The **log** command prints an history of all the commits.
     +First line
     +Second line
 
+A common practice when writing commit messages is to start with a
+one-line description of the commit, optionally followed by a longer
+description which may be split into several paragraphs.
+
+Another thing one may do when writing commit messages is to explain
+more why the change is done than the change itself, since the change
+can be figured out by studying the patch itself.
 
 ### The checkout command
 
