@@ -162,7 +162,7 @@ It is even possible to fix the authorship of our previous commit:
 
     %%bash
     
-    git commit --amend --reset-author 
+    #git commit --amend --reset-author 
 
 And let's make sure this actually worked:
 
@@ -198,7 +198,7 @@ area, like this:
 
     %%bash
     
-    git add -p foo.txt
+    #git add -p foo.txt
 
 And choose 'e' to edit the hunk, then remove the line
 
