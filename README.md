@@ -7,7 +7,7 @@ Install the package manager miniconda3, from:
 
 Create a conda environment 'mds-training', containing required packages:
 
-    conda create -n mds-training python=3 ipython-notebook==2.4.1 pygments
+    conda create -n mds-training python=3 ipython-notebook==2.4.1
 
 Activate the 'mds-training' conda environment:
 
