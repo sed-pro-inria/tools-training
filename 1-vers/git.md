@@ -17,6 +17,7 @@ receive it when the get the project's sources (cvs, svn).
   - Distributed: every developer that has the sources also has the full code
 history (git, mercurial, darcs).
 
+
 Version Control Manager:
   - Source code is frequently **committed** into Git database, and each
 **commit** can be retrieved, shared with team.
@@ -38,7 +39,7 @@ Some terminology:
 containing the project's history.
   - Commit: one record of the code's state in the project's history.
   - Branch: maintain several versions of the project in parallel
- 
+
 **Git** makes it easy to work with **branches**.
   - Branches are easy to create, merge and destroy.
   - Create temporary branches to develop a feature is encouraged.
@@ -92,7 +93,6 @@ Start by creating a new empty directory to experiment with Git:
     # The directory that will contain the Git repository
     changedir('repo')
 
-
 ### The init command
 
 A Git **repository** is created in the current directory using the **init**
@@ -105,7 +105,6 @@ This will create a `.git` hidden directory, where Git stores its database.
     
     git init
     ls -la
-
 
 You can now start developing. For example, we may write "First Line" in a file
 called ``foo.txt``. But in practice, we would probably want to write some real
@@ -120,8 +119,9 @@ source code.
 
 To record (commit) the previous changes to Git's database, do as follows:
 
-    %%bash
 
+    %%bash
+    
     git add foo.txt
     git commit -m "Initial commit."  
 
@@ -141,29 +141,33 @@ should be typed.
 To make sure things have been properly commited, one may use the
 **log** command:
 
-    %%bash
 
+    %%bash
+    
     git log
 
 As can be seen, the metadata associated with the commit includes its
 author. However, the name or e-mail address printed at the moment
 may not look so pretty. Here is how to improve this for future
-commits: 
+commits:
+
 
     %%bash
-
+    
     git config --global user.name "Prénom Nom"
     git config --global user.email prenom.nom@inria.fr
 
 It is even possible to fix the authorship of our previous commit:
 
     %%bash
+    
+    git commit --amend --reset-author 
 
-    git commit --amend --reset-author    
 And let's make sure this actually worked:
 
-    %%bash
 
+    %%bash
+    
     git log
 
 ## How it works: working copy, staging area (index) and database.
@@ -178,8 +182,9 @@ useful e.g. to seperate commits, as we will see.
 
 Suppose we add two lines to foo.xtx:
 
-    %%bash
 
+    %%bash
+    
     echo "Third line" >> oo.txt
     echo "Fourth line" >> foo.txt
 
@@ -189,8 +194,9 @@ changes and should thus be commited separately.
 Git makes it possible to achieve this thanks to its index or staging
 area, like this:
 
-    %%bash
 
+    %%bash
+    
     git add -p foo.txt
 
 And choose 'e' to edit the hunk, then emove the line
@@ -202,7 +208,9 @@ so that the only +line is +Tird line.
 To make sure only the third line has been added to the index and will
 thus be commited, use the **dif** command as ollows:
 
+
     %%bash
+    
     git diff --cached
 
 Before continuing, see how we now have three different versions of
@@ -214,32 +222,37 @@ foo.txt:
 
 Let's commit what has been staged:
 
-    %%bash
 
+    %%bash
+    
     git commit -m "Second commit" 
 
 Let's make sure the commit has worked:
 
-    %%bash
 
+    %%bash
+    
     git log
 
 And note that the staging area is now empty:
 
-    %%bash
 
+    %%bash
+    
     git diff --cached
 
 We can now commit our second change to foo.txt:
 
-    %%bash
 
+    %%bash
+    
     git add foo.txt
     git commit -m ""Third commit 
 
 Two remarks are due here:
 
-1. The example we have jsut seen to understand why the staging area is useful is quite
+1. The example we have jsut seen to understand why the staging area is useful is
+quite
 artificial. It is however rather imortant, because the situation
 it describes can happen quite a lot inpractice. For instance, one fixes
 typos while adding a feature to a program. The new feature and tye
@@ -287,7 +300,6 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     
     git status
 
-
 Stage the file, and observe the new output of the **diff** and **status**
 commands
 
@@ -326,7 +338,6 @@ Commit the file.
     
     git commit -m 'Add fifth line to foo.txt'
 
-
 ### The log command
 
 The **log** command prints an history of all the commits.
@@ -336,17 +347,17 @@ The **log** command prints an history of all the commits.
     git log
 
 
-
     %%bash
     git log -p
 
-A common practice when writing commit messages is to start with a
-one-line description of the commit, optionally followed by a longer
-description which may be split into several paragraphs.
 
-Another thing one may do when writing commit messages is to explain
-more why the change is done than the change itself, since the change
-can be figured out by studying the patch itself.
+    A common practice when writing commit messages is to start with a 
+    one-line description of the commit, optionally followed by a longer
+    description which may be split into several paragraphs.
+    
+    Another thing one may do when writing commit messages is to explain
+    more why the change is done than the change itself, since the change
+    can be figured out by studying the patch itself.
 
 ### The checkout command
 
@@ -356,7 +367,6 @@ HEAD`` state, which will be explained later in the ``Git branches`` section.
 
     %%bash
     git checkout master^
-
 
 
     %%bash
@@ -371,10 +381,8 @@ HEAD`` state, which will be explained later in the ``Git branches`` section.
     git checkout master
 
 
-
     %%bash
     cat foo.txt
-
 
 ### Git commits
 
@@ -450,7 +458,6 @@ the current one with an asterisk.
     
     git branch
 
-
 The **checkout** command allows you to switch to another branch:
 
 
@@ -458,7 +465,6 @@ The **checkout** command allows you to switch to another branch:
     
     git checkout bar
     git branch
-
 
 Now, let us develop something in the two branches:
 
@@ -487,7 +493,6 @@ Now, let us develop something in the two branches:
     git add bar.txt
     git commit -m 'Third line of bar.txt'
 
-
 ### The merge command
 
 We merge the work of the two branches. More specifically, we merge the **bar**
@@ -498,7 +503,6 @@ branch into the **master** branch
     
     git checkout master
     git merge bar
-
 
 Because there is no conflict, the merge is performed automatically. In case of
 confict (same lines of a file modified in both branches):
@@ -521,7 +525,6 @@ the branches.
     %%bash
     
     git graph
-
 
 All the commits form a chain, in which each commit is linked to its parent.
 
