@@ -159,6 +159,7 @@ commits:
 
 It is even possible to fix the authorship of our previous commit:
 
+
     %%bash
     
     git commit --amend --reset-author 
@@ -199,11 +200,11 @@ area, like this:
     
     git add -p foo.txt
 
-And choose 'e' to edit the hunk, then emove the line
+And choose 'e' to edit the hunk, then remove the line
 
 +Fourth line
 
-so that the only +line is +Tird line.
+so that the only +line is +Third line.
 
 To make sure only the third line has been added to the index and will
 thus be commited, use the **dif** command as ollows:
@@ -247,7 +248,7 @@ We can now commit our second change to foo.txt:
     %%bash
     
     git add foo.txt
-    git commit -m ""Third commit 
+    git commit -m "Third commit"
 
 Two remarks are due here:
 
