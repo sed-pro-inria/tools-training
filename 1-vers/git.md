@@ -154,8 +154,8 @@ commits:
 
     %%bash
     
-    git config --global user.name "Prénom Nom"
-    git config --global user.email prenom.nom@inria.fr
+    # git config --global user.name "Prénom Nom"
+    # git config --global user.email prenom.nom@inria.fr
 
 It is even possible to fix the authorship of our previous commit:
 
