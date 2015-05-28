@@ -282,16 +282,6 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     
     git diff
 
-    diff --git a/foo.txt b/foo.txt
-    index 7d91453..6da4d3e 100644
-    --- a/foo.txt
-    +++ b/foo.txt
-    @@ -1,2 +1,3 @@
-     First line
-     Second line
-    +Third line
-
-
 
     %%bash
     
