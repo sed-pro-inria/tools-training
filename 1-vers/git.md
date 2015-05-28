@@ -92,8 +92,6 @@ Start by creating a new empty directory to experiment with Git:
     # The directory that will contain the Git repository
     changedir('repo')
 
-    We are in directory /Users/stentzel/git-training/repo
-
 
 ### The init command
 
@@ -107,12 +105,6 @@ This will create a `.git` hidden directory, where Git stores its database.
     
     git init
     ls -la
-
-    Initialized empty Git repository in /Users/stentzel/git-training/repo/.git/
-    total 0
-    drwxr-xr-x   3 stentzel  sed  102 24 nov 10:59 .
-    drwxr-xr-x   3 stentzel  sed  102 24 nov 10:59 ..
-    drwxr-xr-x  10 stentzel  sed  340 24 nov 10:59 .git
 
 
 You can now start developing. For example, we may write "First Line" in a file
@@ -170,7 +162,7 @@ It is even possible to fix the authorship of our previous commit:
     git commit --amend --reset-author    
 And let's make sure this actually worked:
 
-    %%bahs
+    %%bash
 
     git log
 
@@ -305,15 +297,6 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     
     git status
 
-    On branch master
-    Changes not staged for commit:
-      (use "git add <file>..." to update what will be committed)
-      (use "git checkout -- <file>..." to discard changes in working directory)
-    
-    	modified:   foo.txt
-    
-    no changes added to commit (use "git add" and/or "git commit -a")
-
 
 Stage the file, and observe the new output of the **diff** and **status**
 commands
@@ -332,16 +315,6 @@ commands
     %%bash
     
     git diff --cached
-
-    diff --git a/foo.txt b/foo.txt
-    index 7d91453..6da4d3e 100644
-    --- a/foo.txt
-    +++ b/foo.txt
-    @@ -1,2 +1,3 @@
-     First line
-     Second line
-    +Third line
-
 
 
     %%bash
@@ -363,9 +336,6 @@ Commit the file.
     
     git commit -m 'Add fifth line to foo.txt'
 
-    [master a4d45ae] Add third line to foo.txt
-     1 file changed, 1 insertion(+)
-
 
 ### The log command
 
@@ -375,52 +345,10 @@ The **log** command prints an history of all the commits.
     %%bash
     git log
 
-    commit a4d45aefa80461e46df6461862c4dc57d8107ae2
-    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
-    Date:   Mon Nov 24 11:00:03 2014 +0100
-    
-        Add third line to foo.txt
-    
-    commit 656e8cda032572ffae4e4b800fcb99c2cf3516bd
-    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
-    Date:   Mon Nov 24 10:59:58 2014 +0100
-    
-        Two lines in the new foo.txt file.
-
 
 
     %%bash
     git log -p
-
-    commit a4d45aefa80461e46df6461862c4dc57d8107ae2
-    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
-    Date:   Mon Nov 24 11:00:03 2014 +0100
-    
-        Add third line to foo.txt
-    
-    diff --git a/foo.txt b/foo.txt
-    index 7d91453..6da4d3e 100644
-    --- a/foo.txt
-    +++ b/foo.txt
-    @@ -1,2 +1,3 @@
-     First line
-     Second line
-    +Third line
-    
-    commit 656e8cda032572ffae4e4b800fcb99c2cf3516bd
-    Author: Cécile Stentzel <cecile.stentzel@inria.fr>
-    Date:   Mon Nov 24 10:59:58 2014 +0100
-    
-        Two lines in the new foo.txt file.
-    
-    diff --git a/foo.txt b/foo.txt
-    new file mode 100644
-    index 0000000..7d91453
-    --- /dev/null
-    +++ b/foo.txt
-    @@ -0,0 +1,2 @@
-    +First line
-    +Second line
 
 A common practice when writing commit messages is to start with a
 one-line description of the commit, optionally followed by a longer
@@ -439,19 +367,6 @@ HEAD`` state, which will be explained later in the ``Git branches`` section.
     %%bash
     git checkout master^
 
-    Note: checking out 'master^'.
-    
-    You are in 'detached HEAD' state. You can look around, make experimental
-    changes and commit them, and you can discard any commits you make in this
-    state without impacting any branches by performing another checkout.
-    
-    If you want to create a new branch to retain commits you create, you may
-    do so (now or later) by using -b with the checkout command again. Example:
-    
-      git checkout -b new_branch_name
-    
-    HEAD is now at 656e8cd... Two lines in the new foo.txt file.
-
 
 
     %%bash
@@ -465,17 +380,10 @@ HEAD`` state, which will be explained later in the ``Git branches`` section.
     %%bash
     git checkout master
 
-    Previous HEAD position was 656e8cd... Two lines in the new foo.txt file.
-    Switched to branch 'master'
-
 
 
     %%bash
     cat foo.txt
-
-    First line
-    Second line
-    Third line
 
 
 ### Git commits
@@ -552,9 +460,6 @@ the current one with an asterisk.
     
     git branch
 
-      bar
-    * master
-
 
 The **checkout** command allows you to switch to another branch:
 
@@ -563,12 +468,6 @@ The **checkout** command allows you to switch to another branch:
     
     git checkout bar
     git branch
-
-    * bar
-      master
-
-
-    Switched to branch 'bar'
 
 
 Now, let us develop something in the two branches:
@@ -598,22 +497,6 @@ Now, let us develop something in the two branches:
     git add bar.txt
     git commit -m 'Third line of bar.txt'
 
-    [bar f788c0f] First line of bar.txt
-     1 file changed, 1 insertion(+)
-     create mode 100644 bar.txt
-    [bar cf23407] Second line of bar.txt
-     1 file changed, 1 insertion(+)
-    [master b25e427] Fourth line of foo.txt
-     1 file changed, 1 insertion(+)
-    [master c677188] Fifth line of foo.txt
-     1 file changed, 1 insertion(+)
-    [bar 0b8ea54] Third line of bar.txt
-     1 file changed, 1 insertion(+)
-
-
-    Switched to branch 'master'
-    Switched to branch 'bar'
-
 
 ### The merge command
 
@@ -625,14 +508,6 @@ branch into the **master** branch
     
     git checkout master
     git merge bar
-
-    Merge made by the 'recursive' strategy.
-     bar.txt | 3 +++
-     1 file changed, 3 insertions(+)
-     create mode 100644 bar.txt
-
-
-    Switched to branch 'master'
 
 
 Because there is no conflict, the merge is performed automatically. In case of
@@ -656,17 +531,6 @@ the branches.
     %%bash
     
     git graph
-
-    *   [31mc2ae6ee	[32m (HEAD, master)[0m Merge branch 'bar' [33m(Cécile Stentzel)[0m
-    [31m|[m[32m\[m  
-    [31m|[m * [31m0b8ea54	[32m (bar)[0m Second line of bar.txt [33m(Cécile Stentzel)[0m
-    [31m|[m * [31mcf23407	[32m[0m Second line of bar.txt [33m(Cécile Stentzel)[0m
-    [31m|[m * [31mf788c0f	[32m[0m First line of bar.txt [33m(Cécile Stentzel)[0m
-    * [32m|[m [31mc677188	[32m[0m Fifth line of foo.txt [33m(Cécile Stentzel)[0m
-    * [32m|[m [31mb25e427	[32m[0m Fourth line of foo.txt [33m(Cécile Stentzel)[0m
-    [32m|[m[32m/[m  
-    * [31ma4d45ae	[32m[0m Add third line to file.txt [33m(Cécile Stentzel)[0m
-    * [31m656e8cd	[32m[0m Two lines in the new foo.txt file. [33m(Cécile Stentzel)[0m
 
 
 All the commits form a chain, in which each commit is linked to its parent.
