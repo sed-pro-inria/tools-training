@@ -324,14 +324,6 @@ commands
     
     git status
 
-    On branch master
-    Changes to be committed:
-      (use "git reset HEAD <file>..." to unstage)
-    
-    	modified:   foo.txt
-    
-
-
 Commit the file.
 
 
@@ -372,10 +364,6 @@ HEAD`` state, which will be explained later in the ``Git branches`` section.
 
     %%bash
     cat foo.txt
-
-    First line
-    Second line
-
 
 
     %%bash
