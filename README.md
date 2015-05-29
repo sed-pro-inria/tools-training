@@ -1,17 +1,17 @@
-mds-training
-============
+tools-training
+==============
 
 Install the package manager miniconda3, from:
 
     http://conda.pydata.org/miniconda.html
 
-Create a conda environment 'mds-training', containing required packages:
+Create a conda environment 'tools-training', containing required packages:
 
-    conda create -n mds-training python=3 ipython-notebook==2.4.1
+    conda create -n tools-training python=3 ipython-notebook==2.4.1
 
-Activate the 'mds-training' conda environment:
+Activate the 'tools-training' conda environment:
 
-    source activate mds-training
+    source activate tools-training
 
 Start IPython notebook:
 
