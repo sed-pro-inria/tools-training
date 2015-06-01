@@ -154,15 +154,15 @@ commits:
 
     %%bash
     
-    # git config --global user.name "Prénom Nom"
-    # git config --global user.email prenom.nom@inria.fr
+    git config --local user.name "Prénom Nom"
+    git config --local user.email prenom.nom@inria.fr
 
 It is even possible to fix the authorship of our previous commit:
 
 
     %%bash
     
-    #git commit --amend --reset-author 
+    git commit --amend --reset-author 
 
 And let's make sure this actually worked:
 
@@ -170,6 +170,11 @@ And let's make sure this actually worked:
     %%bash
     
     git log
+
+Note: we used the --local flag here so that the configuration applies
+only to the current repository, but one can also use the --global flag to
+make the coniguration the default for all repositories, given that it can
+then be overloaded in each repository.
 
 ## How it works: working copy, staging area (index) and database.
 
@@ -354,32 +359,40 @@ The **log** command prints an history of all the commits.
 
 ### The checkout command
 
-The **checkout** command restores a previous commit. We are in a ``detached
-HEAD`` state, which will be explained later in the ``Git branches`` section.
-
+The **checkout** command updates files in the working tree to match the
+version in the index or the specified tree. or example:
 
     %%bash
     git checkout master^
 
+Will ask Git to set-up the working copy according to the content of
+Git's database at commit master^, namely one commit before master as
+indicated by the ^ postfix operator.
+
+Let's verify: 
 
     %%bash
     cat foo.txt
 
+And now let's restore the working copy as it was before this checkout:
 
     %%bash
     git checkout master
 
+And let's verify that this worked,too:
+
 
     %%bash
     cat foo.txt
 
-### Git commits
+### More on commits
 
 To take advantage of all the powerful features of Git, it is important to
-underdand what a **commit** actually is.
+understand what a **commit** actually is.
 
-The first thing to know is that Git has stored in its database 2 commit objects,
-each of them containing a complete version of the file ``foo.txt``.
+The first thing to know is that Git has stored in its database 1 commit
+object,for each commit, each commit object containing a complete
+version of the ``foo.txt`` file.
   - For the first commit, Git has stored in its database a commit object
 containing ``First line`` and ``Second line``.
   - For the second commit, Git has stored in its database a commit object
@@ -390,14 +403,15 @@ containing not the difference between the two versions, but the whole file:
 commit objects in Git's database.
 
 Note that for performance, Git has the ability to efficiently compress its
-database and stor differences only (especially during network communication),
-but the model is to store the whole content of files for each commit.
+database and handle differences only (especially during network transfer),
+but the model is to store the whole content of files for each commit, as
+opposed to other revision control systems which only store differences.
 
 This yields a very simple model. A commit contains the directories and files we
 have commited (called ``tree`` and ``blob`` in Git), plus some metadata.
 
 In Git, a commit object contains:
-  - One parent commit (or more).
+  - At least one parent commit (except for the initial commit)
   - The (root) tree (which itself contains trees and blobs).
   - The commit message.
   - The author.
@@ -405,12 +419,21 @@ In Git, a commit object contains:
 
 ### The SHA-1
 
+With Git it is not possible to assign integer numbers to commits in a
+sequential way as is done in svn for instance, because Git's distributed
+nature and branches make the very notionof linear sequence vanish.
+
 Git uses the **SHA-1** cryptographic hash function to identify each object
 (**commit**, **tree**, **blob**) with a hash value. Such a hash value may look
 like the following one:  ``0e1e060688a560015614cf7ec4b77d8a0df07c2f``.
 
-The hash value is computed from the object's content. It is almost impossible
-that **SHA-1** gives the same hash value for two different contents. The risk of
+The hash value is computed from the object's content. It is very
+unlikely that two diferent commit objects have the same
+**SHA-1** hash value. The likelihood of such collisions is so low that i
+is generally considered to be 0, meaning that in practice it is
+considered that having same SHA-1 hash and being the same commit are
+equivalent propositions.
+
 collision is almost zero, and we consider it to be zero.
 
 Each hash value identifies only one commit. It also identifies all the
@@ -423,7 +446,7 @@ Note:
 computers, the hash value will be the same,
   - we know that two commits are different by only comparing their hash values,
   - hash value is very fast to compute: if a whole tree in a commit has not
-changed, Git does not have to recompute it.
+changed, Git does not have to recompute its hash again.
 
 ### Git branches
 
@@ -455,7 +478,20 @@ The **checkout** command allows you to switch to another branch:
     git checkout bar
     git branch
 
-Now, let us develop something in the two branches:
+It is very important to remember that git branch b creates branch b but
+does not change the current branch. This is similar to Unix's mkdir
+command which creates a new directory without changing the current
+directory to the one it just created. To cntinue the analogy with Unix
+commands, git checkout b changes the current branch in the same way
+cd changes the current directory.
+
+It is however common when creating a branch that the intention is to
+switch to that branch right after it has been created and this is what
+the git checkout -b command does. In other words, wha has been achieved
+in two seps before (namely git branch bar and git checkout bar) can
+be achieved with just the following command: git checkout -b bar.
+
+Now, let us develop different things in the two branches:
 
 
     %%bash
@@ -496,7 +532,7 @@ branch into the **master** branch
 Because there is no conflict, the merge is performed automatically. In case of
 confict (same lines of a file modified in both branches):
    - the merge operation stops,
-   - the developper edits the conflicted files, and solves the conflict,
+   - the developper edits the conflicting files to solve the conflict,
    - the developper commits the merged files.
 
 ### What Git branches are
@@ -504,38 +540,46 @@ confict (same lines of a file modified in both branches):
 Edit the file ``~/.gitconfig`` and add the content:
 
     [alias]
-      graph = log --graph --full-history --all --color
+      gr = log --graph --full-history --all --color
 --pretty=tformat:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
 
-This will addde a useful **gr** command to Git, that displays a colored graph of
+This adds a useful **gr** command to Git, that displays a colored graph of
 the branches.
 
 
     %%bash
     
-    git graph
+    git gr
 
-All the commits form a chain, in which each commit is linked to its parent.
+All the commits form a chain, in which each commit is linked to its parent(s).
 
 Creating a branch means having two commits with the same parent, while merging
 means creating a commit with two parents.
 
-We can now give a simple definition of a branch : their are just a
-reference/pointer/name for a given commit.
+We can now give a simple definition of a branch: a symbolic name
+that points to a commit wih no children.
 
 Two special branches are:
    - **master**, the original branch when a repository is created. That's a
 branch like the others.
-   - **HEAD**, the current branch, which is updated after each commit.
+   - **HEAD**, the current branch, which is updated after each commit
+   (like $PWD in Unix shells).
 
-The situation of a **detached HEAD** seen above means restoring an old commit,
-while leaving HEAD pointing to the commit we were on.
+When a commit is checked out that is not the end of a branch (has
+children), it is said that the repository is in "detached head" mode. In
+that state, it is possible to create commits which will be linked to tehe
+one that has been checked out, but it must be kept in mind that no
+symbolic name (apart from HEAD) will be associated with the last commit,
+so when HEAD moves to a different branch the repo wil have a branch with
+no symbolic name associated to its tip and which may hence be
+garbage-collected later by Git. It is however possible and easy to
+associate a symbolic name with a commit at any time with the git branch command.
 
 Note: with this knowledge on commits and branches, some Git features not
 demonstrated here will be easy to understand:
     - rebase
     - fast-forward
-    - tag
+    - tags (symbolic names which don't move, as opposed to branches)
 
 ## Centralized version control
 
