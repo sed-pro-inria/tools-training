@@ -581,16 +581,13 @@ demonstrated here will be easy to understand:
     - fast-forward
     - tags (symbolic names which don't move, as opposed to branches)
 
-## Centralized version control
+## Centralized (à la cvs/svn) version control
 
 Now that we have learned how to work with a single Git repository, we will learn
 how to send/receive commits between two Git repositories
 
-In this section, we will assume a workflow with two developpers:
-    - Alice,
-    - Bob,
-
-both of them having their own repository on their computer:
+In this section, we will assume a workflow with two developpers: Alice
+and Bob. Both of them have their own repository on their computer:
     - Alice's repository A on her computer,
     - Bob's repository B on his computer.
 
@@ -644,10 +641,15 @@ Alice clones the central repository:
     
     git clone file://$PWD/central.git alice
 
-Alice enters her Git repository
+Alice enters her Git repository and configures her name and email for
+that repository (we assume here she didn't do it at the global level, to
+keep all the examples self-contained):
 
+    %%bash
 
-    changedir('alice')
+    cd alice
+    git config --local user.name "Alice"
+    git config --local user.email alice@inria.fr
 
 ### The remote command
 
@@ -698,18 +700,18 @@ repository to the **master** branch of the central repository:
 
     changedir(workdir)
 
-Bob now clones the central repository too:
+Bob now clones the central repository too, enters it and configures his
+name and email:
 
 
     %%bash
     
     git clone file://$PWD/central.git bob
+    cd bob
+    git config --local user.name "Bob"
+    git config --local user.email bob@inria.fr
 
-
-    changedir('bob')
-
-Doing so, he fetches Alice's work.
-
+Doing so, Bob fetches Alice's work.
 
     %%bash
     
@@ -765,6 +767,13 @@ A **remote branch** is a read-only branch that reflects the state of a branch of
 a remote repository. If the branch changes on the remote repository, use
 **fetch** again to refresh it.
 
+Note: to see only remote branches rather than all branches one can use
+the -r flag instead of -a:
+
+    %%%bash
+
+    git branch -r
+
 To get all commits of ``remotes/central/master`` **remote branch** into the
 **master** branch, merge it:
 
@@ -788,9 +797,7 @@ She creates a branch for this, and works in it:
 
     %%bash
     
-    git branch exp
-    git checkout exp
-    
+    git checkout -b exp
     echo "First line" > bar.txt
     git add bar.txt
     git commit -m 'First line of bar.txt'
@@ -832,9 +839,9 @@ of the central repository:
     %%bash
     
     git fetch
-    git branch -a
+    git branch -r
 
-Bob has remote branch ``remotes/central/exp``, but how to work with it?
+Bob has remote branch ``central/exp``, but how to work with it?
 
 Adding the **--track** option to the **checkout** command makes Git create a
 **tracking branch**:
@@ -870,7 +877,7 @@ At this point, it is instructive to visualize the different branches:
 
     %%bash
     
-    git graph
+    git gr
 
 We note that:
     - Bob's master branch has 2 more commits than the central one.
@@ -895,10 +902,10 @@ Bob pushes the commits of the two branches.
     git checkout master
     
     git push origin master:master
-    git graph
+    git gr
 
 Finally, the ``exp`` branch is merged into master. The merge commit is pushed to
-the central repository, and the branch is deleted:
+the central repository, and the exp branch is deleted:
 
 
     %%bash
@@ -908,7 +915,7 @@ the central repository, and the branch is deleted:
     git merge exp
     git push origin master:master
     git branch -d exp
-    git graph
+    git gr
 
 ## Distributed workflow          
 
