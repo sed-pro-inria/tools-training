@@ -920,24 +920,35 @@ the central repository, and the exp branch is deleted:
 ## Distributed workflow          
 
 Committing to a central repository is okay for small teams where developpers
-know and trust each other
+know and trust each other. For larger projects, though, it is blocking
+and dangerous to give write access to the project's main repository
+to an external contributor.
 
-For larger projects, it is blocking and dangerous to give write access to the
-central repository to an external contributor.
+Since Git is a distributed revision control system, clloning a
+repository means creating a copy of that repository that has exactly
+as much information. This opens the road to a workflow different rom the
+previous one, where each developer has a public repository from which
+everybody can read. When this developer wants to share code, he/she
+pushes the code to be shared to his/her public repository and informs
+the maintainers of the project that there is some code available that
+may beintegrated to the project. The maintainers review the code and, if
+they find it useful, integrate it to the project's main code base.
 
-Git solves this problem with **forks**.
+This workflow is made possible by the way Git has been designed. The
+GitHub platform provides two mechanisms (fork and pull request) that
+help developers adopting this workflow, but the workflow itself relies
+only on Git features and does not require GitHub to be implemented.
 
 When a developper wants to contribute to a project, he/she forks the original
 bare repository. It means that the developper gets his own bare repository. In
 this repository, he develops a feature in a branch. When the work is done, he
-asks an administrator to pull the feature branch of his repository to the master
-branch of the central repository.
+asks an administrator to pull the feature branch from his repository to the master
+branch of the project's main repository.
 
-This is called a **pull request**.
+In GitHub terminology, this is called a **pull request**.
 
 Let us see this in practice by adding **Emma** as a developper to our previous
 example.
-
 
     changedir(workdir)
 
@@ -957,14 +968,17 @@ Then Emma clones her bare public repository.
 
     changedir('emma')
 
+    %%bash
+    git config --local user.name "Emma"
+    git config --local user.email emma@inria.fr
+
 Emma creates a topic branch, works on it, and pushes it to her public
 repository:
 
 
     %%bash
     
-    git branch baz
-    git checkout baz
+    git checkout -b baz
     
     echo "First line" > baz.txt
     git add baz.txt
@@ -974,13 +988,13 @@ repository:
     git add baz.txt
     git commit -m 'Second line in baz.txt'
     
-    git push origin baz:baz
+    git push central-emma-fork baz:baz
 
 
     changedir('alice')
 
-The next step for Emma is to ask Alice to get **baz** branch of **central-emma-
-for** pulled into **master** branch for **central**.
+The next step for Emma is to ask Alice to get the **baz** branch from
+**central-emma-fork** pulled into the **master** branch of **central**.
 
 Note: GitHub provides functionnality to request a pull, and review the
 associated code.
@@ -1013,3 +1027,8 @@ to the ``baz`` branch. When her work is done, Alice merges it to ``master``, and
 
 > "Version Control with Git, Powerful tools and techniques for collaborative
 software development" By Jon Loeliger, Matthew McCullough
+
+> HitHug let's you learn Git through a nice game:
+  https://github.com/gazler/githug
+
+> Another game: https://github.com/jlord/git-it
