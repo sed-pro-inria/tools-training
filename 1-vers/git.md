@@ -185,13 +185,13 @@ being commited to Git's database.
 Having this third area may seem odd at first, but it turns out to be
 useful e.g. to seperate commits, as we will see.
 
-Suppose we add two lines to foo.xtx:
+Suppose we add two lines to foo.txt:
 
 
     %%bash
     
-    echo "Third line" >> oo.txt
-    echo "Fourth line" >> foo.txt
+    echo "Second line" >> foo.txt
+    echo "Third line" >> foo.txt
 
 But then we realise that these two lines really represent two distinct
 changes and should thus be commited separately.
@@ -206,24 +206,24 @@ area, like this:
 
 And choose 'e' to edit the hunk, then remove the line
 
-+Fourth line
++Third line
 
-so that the only +line is +Third line.
+so that the only line starting wih a + symbol "Second line".
 
-To make sure only the third line has been added to the index and will
-thus be commited, use the **dif** command as ollows:
+To make sure only the second line has been added to the index and will
+thus be commited, use the **dif** command as follows:
 
 
     %%bash
     
     git diff --cached
 
-Before continuing, see how we now have three different versions of
+Before continuing, notice how we now have three different versions of
 foo.txt:
 
-- One in the working copy (4 lines)
-- One in the index (3 lines)
-- One in the database (2 lines)
+- One in the working copy (3 lines)
+- One in the index (2 lines)
+- One in the database (1 line)
 
 Let's commit what has been staged:
 
@@ -256,18 +256,21 @@ We can now commit our second change to foo.txt:
 
 Two remarks are due here:
 
-1. The example we have jsut seen to understand why the staging area is useful is
-quite
-artificial. It is however rather imortant, because the situation
-it describes can happen quite a lot inpractice. For instance, one fixes
-typos while adding a feature to a program. The new feature and tye
-typo fixups could or sure be commited together, but doing two
-distinct ommits is considered better practice because it gives a
-cleaner history. In such a situation, the -p flag to the add
+1. The example we have jsut seen to understand why the staging area is
+useful is quite artificial. It is however rather imortant, because
+the situation it describes can happen quite a lot in practice. For
+instance, suppose that while adding a feature to a program one
+discovers typos in the existing code. The new
+feature and the typo fixups could for sure be commited together,
+but doing two distinct commits is considered better practice because
+it gives a cleaner history (In particular, should the feature be removed
+later, that could be achieved without loosing the typo fixups.)
+
+In such a situation, the -p flag to the add
 command turns out to be especially useful. Moreover, since the
-changes happenmost of the time in different hunks, it will be easier
-to use the interactive **add** in sch situations tan in the one above,
-since it will not require any manual hunk edition as before.
+changes happen most of the time in different hunks (regions), it will
+be easier to use the interactive **add** in such situations than in
+the one above, since it will not require any manual hunk edition as before.
 
 2. The three areas that have just been introduced (working copy,
 staging area and commit database) are of crucial importance. Indeed,
