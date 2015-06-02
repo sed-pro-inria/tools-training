@@ -633,7 +633,7 @@ directly into this repository, but only **push** commits.
 Never **push** commits to a Git repository that is not **bare**, to avoid
 inconsistencies with its working copy.
 
-By convention, **bare** repositories are suffixed with **.git**, even i it is
+By convention, **bare** repositories are suffixed with **.git**, even if it is
 not necessary.
 
 
@@ -760,7 +760,7 @@ as local branches:
     git branch
 
 But where are the **central** repository branches which have just been
-downloaded?
+fetched?
 
 Adding the **-a** option to the **branch** command reveals them:
 
@@ -795,7 +795,7 @@ Note: **fetch** and **merge** operations can be accomplished in one command,
 
     git pull <remote_name> <remote_branch>:<local_branch>
 
-### Pushing a feature branch
+### Pushing a (feature) branch
 
 While Alice and Bob are working on the master branch, Alice wants to develop an
 experimental feature.
@@ -840,7 +840,7 @@ At the same time, Bob has worked on the master branch:
     git add foo.txt
     git commit -m "Fourth line in foo.txt"
 
-Bob wants to see Alice's work on the ``exp`` branch. He downloads all branches
+Bob wants to see Alice's work on the ``exp`` branch. He fetches all branches
 of the central repository:
 
 
@@ -861,7 +861,7 @@ Adding the **--track** option to the **checkout** command makes Git create a
 A tracking branch is our local copy of a remote branch. Unlike the remote
 branch, we have write access to it.
 
-Tracking branches can also be used to call the **pull** and **push** command
+Tracking branches can also be used to call the **pull** and **push** commands
 without arguments.
 
 Note that Alice and Bob can work on the ``exp`` branch without changing anything
@@ -895,12 +895,14 @@ The verbose option of **branch** is useful to see tracking branches:
 
 
     %%bash
+
     git branch -avv
 
 Bob pushes the commits of the two branches.
 
 
     %%bash
+
     git push origin exp:exp
     git push origin master:master
 
