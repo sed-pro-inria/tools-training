@@ -1,19 +1,19 @@
 
-# Version control
+# Version control with Git
 
 <img src="images/git_commit.png">
 
-## Git, a distributed Version Control Manager
+## Git, a distributed Version Control Sysem
 
-Version control means keeping track of code evlolution by recoding
+Version control means keeping track of code evlolution by recording
 the code's state after each meaningful change. This is useful:
   - To cancel a non-working modification
-  - To perform regression tests / continuous integratino
+  - To perform regression tests / continuous integration
 
 The database where the different states of the code are recorded can be:
   - Local: the project has only one developer
   - Centralised: it is available on a server but developers do not
-receive it when the get the project's sources (cvs, svn).
+receive it when they get the project's sources (cvs, svn).
   - Distributed: every developer that has the sources also has the full code
 history (git, mercurial, darcs).
 
@@ -42,15 +42,14 @@ containing the project's history.
 
 **Git** makes it easy to work with **branches**.
   - Branches are easy to create, merge and destroy.
-  - Create temporary branches to develop a feature is encouraged.
+  - Creating temporary branches to develop a feature is encouraged.
 
 **Git** has a few core concepts that must be understood.
-   - Without knowing these core concept, using Git is frustrating and painful.
+   - Without knowing these core concepts, using Git is frustrating and painful.
    - Knowing them, using Git is powerful and easy.
 
 Thanks to Git's simplicity for creating new repositories and managing branches,
-a workflow adapted to your team
-may be chosen. For example:
+a workflow adapted to your team may be chosen. For example:
    - working with a central repository and contributing into branches (small
 private teams);
    - working with forks and contributing with pull requests (large teams with
@@ -61,11 +60,11 @@ adoption easier.
 
 ## Local version control (only one Git repository)
 
-We start working on a repository alone.
+We start working on a single repository.
 
 In this section, we will learn the core concepts of Git:
-    - staging area,
     - commits,
+    - staging area (index),
     - branches.
 
 Start by creating a new empty directory to experiment with Git:
