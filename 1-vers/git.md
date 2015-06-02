@@ -296,7 +296,7 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
 
     %%bash
     
-    echo 'Fifth line' >> foo.txt
+    echo 'Fourth line' >> foo.txt
 
 
     %%bash
@@ -308,7 +308,7 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     
     git status
 
-Stage the file, and observe the new output of the **diff** and **status**
+Stage the file, and observe the new outputs of the **diff** and **status**
 commands
 
 
@@ -336,7 +336,7 @@ Commit the file.
 
     %%bash
     
-    git commit -m 'Add fifth line to foo.txt'
+    git commit -m 'Add fourth line to foo.txt'
 
 ### The log command
 
@@ -344,10 +344,12 @@ The **log** command prints an history of all the commits.
 
 
     %%bash
+
     git log
 
 
     %%bash
+
     git log -p
 
 
@@ -362,9 +364,10 @@ The **log** command prints an history of all the commits.
 ### The checkout command
 
 The **checkout** command updates files in the working tree to match the
-version in the index or the specified tree. or example:
+version in the index or the specified tree. For example:
 
     %%bash
+
     git checkout master^
 
 Will ask Git to set-up the working copy according to the content of
@@ -374,17 +377,20 @@ indicated by the ^ postfix operator.
 Let's verify: 
 
     %%bash
+
     cat foo.txt
 
 And now let's restore the working copy as it was before this checkout:
 
     %%bash
+
     git checkout master
 
-And let's verify that this worked,too:
+And let's verify that this worked, too:
 
 
     %%bash
+
     cat foo.txt
 
 ### More on commits
@@ -396,18 +402,18 @@ The first thing to know is that Git has stored in its database 1 commit
 object,for each commit, each commit object containing a complete
 version of the ``foo.txt`` file.
   - For the first commit, Git has stored in its database a commit object
-containing ``First line`` and ``Second line``.
+containing ``First line``.
   - For the second commit, Git has stored in its database a commit object
 containing not the difference between the two versions, but the whole file:
-``First line`` and ``Second line`` (hence duplicated in Git's database) and
-``Third line``.
-  - After the second commit, ``First line`` **is** duplicated in the 2 different
-commit objects in Git's database.
+``First line`` (hence duplicated in Git's database), and ``Second line``.
+
+  - After the second commit, ``First line`` **is** duplicated in the 2
+different commit objects in Git's database.
 
 Note that for performance, Git has the ability to efficiently compress its
 database and handle differences only (especially during network transfer),
 but the model is to store the whole content of files for each commit, as
-opposed to other revision control systems which only store differences.
+opposed to some other revision control systems which only store differences.
 
 This yields a very simple model. A commit contains the directories and files we
 have commited (called ``tree`` and ``blob`` in Git), plus some metadata.
@@ -423,7 +429,7 @@ In Git, a commit object contains:
 
 With Git it is not possible to assign integer numbers to commits in a
 sequential way as is done in svn for instance, because Git's distributed
-nature and branches make the very notionof linear sequence vanish.
+nature and branches make the very notion of linear sequence vanish.
 
 Git uses the **SHA-1** cryptographic hash function to identify each object
 (**commit**, **tree**, **blob**) with a hash value. Such a hash value may look
@@ -431,23 +437,21 @@ like the following one:  ``0e1e060688a560015614cf7ec4b77d8a0df07c2f``.
 
 The hash value is computed from the object's content. It is very
 unlikely that two diferent commit objects have the same
-**SHA-1** hash value. The likelihood of such collisions is so low that i
+**SHA-1** hash value. The likelihood of such collisions is so low that it
 is generally considered to be 0, meaning that in practice it is
 considered that having same SHA-1 hash and being the same commit are
 equivalent propositions.
 
-collision is almost zero, and we consider it to be zero.
-
 Each hash value identifies only one commit. It also identifies all the
 directories and files that belong to the commit. Note that parent commits are
-also part of the commit:  two commits sharing the same files and directories,
+also part of the commit: two commits sharing the same files and directories,
 but with different commit parents, will have different hash values.
 
 Note:
   - if two developpers create exactly the same commit on two different
 computers, the hash value will be the same,
   - we know that two commits are different by only comparing their hash values,
-  - hash value is very fast to compute: if a whole tree in a commit has not
+  - hash value are very fast to compute: if a whole tree in a commit has not
 changed, Git does not have to recompute its hash again.
 
 ### Git branches
@@ -465,7 +469,8 @@ A branch is created with the **branch** command, followed by a branch **name**:
     git branch bar
 
 Without any argument, the **branch** command lists all the branches and marks
-the current one with an asterisk.
+the current one with an asterisk (git status also displays the
+current branch).
 
 
     %%bash
@@ -483,14 +488,14 @@ The **checkout** command allows you to switch to another branch:
 It is very important to remember that git branch b creates branch b but
 does not change the current branch. This is similar to Unix's mkdir
 command which creates a new directory without changing the current
-directory to the one it just created. To cntinue the analogy with Unix
+directory to the one it just created. To continue the analogy with Unix
 commands, git checkout b changes the current branch in the same way
 cd changes the current directory.
 
 It is however common when creating a branch that the intention is to
 switch to that branch right after it has been created and this is what
-the git checkout -b command does. In other words, wha has been achieved
-in two seps before (namely git branch bar and git checkout bar) can
+the git checkout -b command does. In other words, what had been achieved
+in two steps before (namely git branch bar and git checkout bar) can
 be achieved with just the following command: git checkout -b bar.
 
 Now, let us develop different things in the two branches:
@@ -507,13 +512,13 @@ Now, let us develop different things in the two branches:
     git commit -m 'Second line of bar.txt'
     
     git checkout master
-    echo "Fourth line" >> foo.txt
-    git add foo.txt
-    git commit -m  'Fourth line of foo.txt'
-    
     echo "Fifth line" >> foo.txt
     git add foo.txt
-    git commit -m 'Fifth line of foo.txt'
+    git commit -m  'Fifth line of foo.txt'
+    
+    echo "Sixth line" >> foo.txt
+    git add foo.txt
+    git commit -m 'Sixth line of foo.txt'
     
     git checkout bar
     echo 'Third line' >> bar.txt
@@ -559,7 +564,7 @@ Creating a branch means having two commits with the same parent, while merging
 means creating a commit with two parents.
 
 We can now give a simple definition of a branch: a symbolic name
-that points to a commit wih no children.
+that points to a commit with no children.
 
 Two special branches are:
    - **master**, the original branch when a repository is created. That's a
@@ -575,7 +580,8 @@ symbolic name (apart from HEAD) will be associated with the last commit,
 so when HEAD moves to a different branch the repo wil have a branch with
 no symbolic name associated to its tip and which may hence be
 garbage-collected later by Git. It is however possible and easy to
-associate a symbolic name with a commit at any time with the git branch command.
+associate a symbolic name with a commit at any time with the git
+branch command.
 
 Note: with this knowledge on commits and branches, some Git features not
 demonstrated here will be easy to understand:
