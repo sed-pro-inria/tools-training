@@ -3,7 +3,7 @@
 
 <img src="images/git_commit.png">
 
-## Git, a distributed Version Control Sysem
+## Git, a distributed Version Control System
 
 Version control means keeping track of code evlolution by recording
 the code's state after each meaningful change. This is useful:
@@ -19,44 +19,35 @@ history (git, mercurial, darcs).
 
 
 Version Control Manager:
-  - Source code is frequently **committed** into Git database, and each
-**commit** can be retrieved, shared with team.
+  - Source code is frequently **committed** into Git database, and each **commit** can be retrieved, shared with team.
   - Keep, search your code history.
   - Develop software in team efficiently.
-
+  
 Distributed:
-  - Unlike **SVN** which is **centralized**, **Git** is **distributed**. It
-means that Git does not require to use one central repository, but multiple ones
-may be used.
-  - When one downloads source code from a Git repository, it creates a new Git
-repository, with the full database. There is no conceptual difference between
-the two repositories.
+  - Unlike **SVN** which is **centralized**, **Git** is **distributed**. It means that Git does not require to use one central repository, but multiple ones may be used.
+  - When one downloads source code from a Git repository, it creates a new Git repository, with the full database. There is no conceptual difference between the two repositories.
   - Offline work possibility
   - Multiple possible workflows to collaborate with other developers.
-
+  
 Some terminology:
   - Repository: the vesion-controlled project and optionally the database
 containing the project's history.
   - Commit: one record of the code's state in the project's history.
   - Branch: maintain several versions of the project in parallel
-
+  
 **Git** makes it easy to work with **branches**.
   - Branches are easy to create, merge and destroy.
   - Creating temporary branches to develop a feature is encouraged.
-
+  
 **Git** has a few core concepts that must be understood.
    - Without knowing these core concepts, using Git is frustrating and painful.
    - Knowing them, using Git is powerful and easy.
-
-Thanks to Git's simplicity for creating new repositories and managing branches,
-a workflow adapted to your team may be chosen. For example:
-   - working with a central repository and contributing into branches (small
-private teams);
-   - working with forks and contributing with pull requests (large teams with
-external contributors).
-
-This presentation deals with the core concepts of Git, so as to make its
-adoption easier.
+   
+Thanks to Git's simplicity for creating new repositories and managing branches, a workflow adapted to your team may be chosen. For example:
+   - working with a central repository and contributing into branches (small private teams);
+   - working with forks and contributing with pull requests (large teams with external contributors).
+   
+This presentation deals with the core concepts of Git, so as to make its adoption easier.
 
 ## Local version control (only one Git repository)
 
@@ -94,8 +85,7 @@ Start by creating a new empty directory to experiment with Git:
 
 ### The init command
 
-A Git **repository** is created in the current directory using the **init**
-command.
+A Git **repository** is created in the current directory using the **init** command.
 
 This will create a `.git` hidden directory, where Git stores its database.
 
@@ -105,9 +95,7 @@ This will create a `.git` hidden directory, where Git stores its database.
     git init
     ls -la
 
-You can now start developing. For example, we may write "First Line" in a file
-called ``foo.txt``. But in practice, we would probably want to write some real
-source code.
+You can now start developing. For example, we may write "First Line" in a file called ``foo.txt``. But in practice, we would probably want to write some real source code.
 
 
     %%bash
@@ -170,8 +158,8 @@ And let's make sure this actually worked:
     
     git log
 
-Note: we used the --local flag here so that the configuration applies
-only to the current repository, but one can also use the --global flag to
+Note: we used the **--local** flag here so that the configuration applies
+only to the current repository, but one can also use the **--global** flag to
 make the coniguration the default for all repositories, given that it can
 then be overloaded in each repository.
 
@@ -211,7 +199,7 @@ And choose 'e' to edit the hunk, then remove the line
 so that the only line starting wih a + symbol "Second line".
 
 To make sure only the second line has been added to the index and will
-thus be commited, use the **dif** command as follows:
+thus be commited, use the **diff** command as follows:
 
 
     %%bash
@@ -272,6 +260,7 @@ changes happen most of the time in different hunks (regions), it will
 be easier to use the interactive **add** in such situations than in
 the one above, since it will not require any manual hunk edition as before.
 
+
 2. The three areas that have just been introduced (working copy,
 staging area and commit database) are of crucial importance. Indeed,
 almost all git commands either
@@ -290,8 +279,7 @@ the three areas?
 
 ### The diff and status commands
 
-Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
-**status** commands
+Modify the ``foo.txt`` file, and observe the outputs of the **diff** and **status** commands
 
 
     %%bash
@@ -308,8 +296,7 @@ Modify the ``foo.txt`` file, and observe the outputs of the **diff** and
     
     git status
 
-Stage the file, and observe the new outputs of the **diff** and **status**
-commands
+Stage the file, and observe the new outputs of the **diff** and **status** commands
 
 
     %%bash
@@ -344,12 +331,10 @@ The **log** command prints an history of all the commits.
 
 
     %%bash
-
     git log
 
 
     %%bash
-
     git log -p
 
 
@@ -363,11 +348,11 @@ The **log** command prints an history of all the commits.
 
 ### The checkout command
 
-The **checkout** command updates files in the working tree to match the
-version in the index or the specified tree. For example:
+The **checkout** command updates files in the working tree to match the version in the index or the specified tree. For example:
+
+
 
     %%bash
-
     git checkout master^
 
 Will ask Git to set-up the working copy according to the content of
@@ -376,21 +361,20 @@ indicated by the ^ postfix operator.
 
 Let's verify: 
 
-    %%bash
 
+    %%bash
     cat foo.txt
 
 And now let's restore the working copy as it was before this checkout:
 
-    %%bash
 
+    %%bash
     git checkout master
 
 And let's verify that this worked, too:
 
 
     %%bash
-
     cat foo.txt
 
 ### More on commits
@@ -454,10 +438,10 @@ computers, the hash value will be the same,
   - hash value are very fast to compute: if a whole tree in a commit has not
 changed, Git does not have to recompute its hash again.
 
+
 ### Git branches
 
-Suppose we now want to try developing a new feature in our code, while
-continuing our previous work on ``foo.txt``.
+Suppose we now want to try developing a new feature in our code, while continuing our previous work on ``foo.txt``.
 
 Git encourages creating a branch for this.
 
@@ -468,9 +452,7 @@ A branch is created with the **branch** command, followed by a branch **name**:
     
     git branch bar
 
-Without any argument, the **branch** command lists all the branches and marks
-the current one with an asterisk (git status also displays the
-current branch).
+Without any argument, the **branch** command lists all the branches and marks the current one with an asterisk (git status also displays the current branch).
 
 
     %%bash
@@ -527,8 +509,7 @@ Now, let us develop different things in the two branches:
 
 ### The merge command
 
-We merge the work of the two branches. More specifically, we merge the **bar**
-branch into the **master** branch
+We merge the work of the two branches. More specifically, we merge the **bar** branch into the **master** branch
 
 
     %%bash
@@ -536,8 +517,7 @@ branch into the **master** branch
     git checkout master
     git merge bar
 
-Because there is no conflict, the merge is performed automatically. In case of
-confict (same lines of a file modified in both branches):
+Because there is no conflict, the merge is performed automatically. In case of confict (same lines of a file modified in both branches):
    - the merge operation stops,
    - the developper edits the conflicting files to solve the conflict,
    - the developper commits the merged files.
@@ -547,11 +527,9 @@ confict (same lines of a file modified in both branches):
 Edit the file ``~/.gitconfig`` and add the content:
 
     [alias]
-      gr = log --graph --full-history --all --color
---pretty=tformat:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
+      gr = log --graph --full-history --all --color --pretty=tformat:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s%x20%x1b[33m(%an)%x1b[0m"
 
-This adds a useful **gr** command to Git, that displays a colored graph of
-the branches.
+This adds a useful **gr** command to Git, that displays a colored graph of the branches.
 
 
     %%bash
@@ -560,11 +538,9 @@ the branches.
 
 All the commits form a chain, in which each commit is linked to its parent(s).
 
-Creating a branch means having two commits with the same parent, while merging
-means creating a commit with two parents.
+Creating a branch means having two commits with the same parent, while merging means creating a commit with two parents.
 
-We can now give a simple definition of a branch: a symbolic name
-that points to a commit with no children.
+We can now give a simple definition of a branch: a symbolic name that points to a commit with no children.
 
 Two special branches are:
    - **master**, the original branch when a repository is created. That's a
@@ -653,24 +629,20 @@ Alice enters her Git repository and configures her name and email for
 that repository (we assume here she didn't do it at the global level, to
 keep all the examples self-contained):
 
-    %%bash
-
     cd alice
     git config --local user.name "Alice"
     git config --local user.email alice@inria.fr
 
 ### The remote command
 
-Without argument, the *remote* command lists the **remote** repositories Git
-knows about:
+Without argument, the *remote* command lists the **remote** repositories Git knows about:
 
 
     %%bash
     
     git remote
 
-When the central repository has been cloned, Git has given it the name
-**origin**, by convention.
+When the central repository has been cloned, Git has given it the name **origin**, by convention.
 
 Later, we will learn how to register additionnal remote repositories.
 
@@ -689,16 +661,13 @@ Alice works and commits into her repository:
 
 ### The push command
 
-Now, Alice wants to send her commits to the central repository, so that Bob can
-get them.
+Now, Alice wants to send her commits to the central repository, so that Bob can get them.
 
 To do so, she uses the **push** command, whose arguments are:
 
     git push <remote_name> <local_branch>:<remote_branch>
 
-The remote_name is **origin**, Alice pushes the **master** branch of her
-repository to the **master** branch of the central repository:
-
+The remote_name is **origin**, Alice pushes the **master** branch of her repository to the **master** branch of the central repository:
 
 
     %%bash
@@ -708,8 +677,7 @@ repository to the **master** branch of the central repository:
 
     changedir(workdir)
 
-Bob now clones the central repository too, enters it and configures his
-name and email:
+Bob now clones the central repository too, enters it and configures his name and email:
 
 
     %%bash
@@ -741,8 +709,7 @@ Bob makes some changes, commits and pushes:
     changedir('alice')
 
 Alice wants to get Bob's commits. She
-uses the **fetch** command, which donwloads all the commits of all branches from
-a remote repository.
+uses the **fetch** command, which donwloads all the commits of all branches from a remote repository.
 
 
     %%bash
@@ -751,16 +718,14 @@ a remote repository.
 
 ### Remote branches
 
-The git **branch** command lists all branches of Alice's repository, also known
-as local branches:
+The git **branch** command lists all branches of Alice's repository, also known as local branches:
 
 
     %%bash
     
     git branch
 
-But where are the **central** repository branches which have just been
-fetched?
+But where are the **central** repository branches which have just been fetched?
 
 Adding the **-a** option to the **branch** command reveals them:
 
@@ -771,15 +736,12 @@ Adding the **-a** option to the **branch** command reveals them:
 
 ``remotes/central/master.git`` is called a **remote branch**.
 
-A **remote branch** is a read-only branch that reflects the state of a branch of
-a remote repository. If the branch changes on the remote repository, use
-**fetch** again to refresh it.
+A **remote branch** is a read-only branch that reflects the state of a branch of a remote repository. If the branch changes on the remote repository, use **fetch** again to refresh it.
 
-Note: to see only remote branches rather than all branches one can use
-the -r flag instead of -a:
+Note: to see only remote branches rather than all branches one can use the -r flag instead of -a:
 
     %%%bash
-
+    
     git branch -r
 
 To get all commits of ``remotes/central/master`` **remote branch** into the
@@ -790,15 +752,13 @@ To get all commits of ``remotes/central/master`` **remote branch** into the
     
     git merge remotes/origin/master
 
-Note: **fetch** and **merge** operations can be accomplished in one command,
-**pull**:
+Note: **fetch** and **merge** operations can be accomplished in one command, **pull**:
 
     git pull <remote_name> <remote_branch>:<local_branch>
 
 ### Pushing a (feature) branch
 
-While Alice and Bob are working on the master branch, Alice wants to develop an
-experimental feature.
+While Alice and Bob are working on the master branch, Alice wants to develop an experimental feature.
 
 She creates a branch for this, and works in it:
 
@@ -806,6 +766,7 @@ She creates a branch for this, and works in it:
     %%bash
     
     git checkout -b exp
+    
     echo "First line" > bar.txt
     git add bar.txt
     git commit -m 'First line of bar.txt'
@@ -814,8 +775,7 @@ She creates a branch for this, and works in it:
     git add bar.txt
     git commit -m "Second line in bar.txt"
 
-Alice then pushes her branch to a similarly named branch of the central
-repository:
+Alice then pushes her branch to a similarly named branch of the central repository:
 
 
     %%bash
@@ -840,8 +800,7 @@ At the same time, Bob has worked on the master branch:
     git add foo.txt
     git commit -m "Fourth line in foo.txt"
 
-Bob wants to see Alice's work on the ``exp`` branch. He fetches all branches
-of the central repository:
+Bob wants to see Alice's work on the ``exp`` branch. He fetches all branches of the central repository:
 
 
     %%bash
@@ -851,21 +810,17 @@ of the central repository:
 
 Bob has remote branch ``central/exp``, but how to work with it?
 
-Adding the **--track** option to the **checkout** command makes Git create a
-**tracking branch**:
+Adding the **--track** option to the **checkout** command makes Git create a **tracking branch**:
 
 
     %%bash
     git checkout --track origin/exp
 
-A tracking branch is our local copy of a remote branch. Unlike the remote
-branch, we have write access to it.
+A tracking branch is our local copy of a remote branch. Unlike the remote branch, we have write access to it.
 
-Tracking branches can also be used to call the **pull** and **push** commands
-without arguments.
+Tracking branches can also be used to call the **pull** and **push** commands without arguments.
 
-Note that Alice and Bob can work on the ``exp`` branch without changing anything
-to the ``master`` branch.
+Note that Alice and Bob can work on the ``exp`` branch without changing anything to the ``master`` branch.
   - if ``exp`` was not a good idea, the branch can be dropped,
   - if ``exp`` is a good idea, it may be merged into the ``master`` branch.
 
@@ -895,14 +850,12 @@ The verbose option of **branch** is useful to see tracking branches:
 
 
     %%bash
-
     git branch -avv
 
 Bob pushes the commits of the two branches.
 
 
     %%bash
-
     git push origin exp:exp
     git push origin master:master
 
@@ -914,8 +867,7 @@ Bob pushes the commits of the two branches.
     git push origin master:master
     git gr
 
-Finally, the ``exp`` branch is merged into master. The merge commit is pushed to
-the central repository, and the exp branch is deleted:
+Finally, the ``exp`` branch is merged into master. The merge commit is pushed to the central repository, and the exp branch is deleted:
 
 
     %%bash
@@ -960,6 +912,7 @@ In GitHub terminology, this is called a **pull request**.
 Let us see this in practice by adding **Emma** as a developper to our previous
 example.
 
+
     changedir(workdir)
 
 Emma starts by forking the central repository to her own bare repository.
@@ -977,13 +930,10 @@ Then Emma clones her bare public repository.
 
 
     changedir('emma')
-
-    %%bash
     git config --local user.name "Emma"
     git config --local user.email emma@inria.fr
 
-Emma creates a topic branch, works on it, and pushes it to her public
-repository:
+Emma creates a topic branch, works on it, and pushes it to her public repository:
 
 
     %%bash
