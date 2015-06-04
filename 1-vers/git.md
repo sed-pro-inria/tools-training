@@ -70,7 +70,7 @@ Start by creating a new empty directory to experiment with Git:
     # Remove possible existing working, and starts with a fresh one.
     if isdir(workdir):
         rmtree(workdir)
-    makedirs(workdir)          
+    makedirs(workdir)
     
     def changedir(directory):
         """Set up a directory relative to workdir"""
@@ -588,7 +588,7 @@ easy. Forges like **Inria's GForge**, **GitHub**, **Bitbucket**, **Gitorious**
 should be preferred.
 
 
-    changedir(workdir)
+    changedir('')
 
 ### The --bare option of the init command
 
@@ -629,9 +629,11 @@ that repository (we assume here she didn't do it at the global level, to
 keep all the examples self-contained):
 
 
+    changedir('alice')
+
+
     %%bash
     
-    changedir('alice')
     git config --local user.name "Alice"
     git config --local user.email alice@inria.fr
 
@@ -675,15 +677,23 @@ The remote_name is **origin**, Alice pushes the **master** branch of her reposit
     %%bash
     
     git push origin master:master
-    changedir(workdir)
 
 Bob now clones the central repository too, enters it and configures his name and email:
+
+
+    changedir('')
 
 
     %%bash
     
     git clone file://$PWD/central.git bob
+
+
     changedir('bob')
+
+
+    %%bash
+    
     git config --local user.name "Bob"
     git config --local user.email bob@inria.fr
 
@@ -915,7 +925,7 @@ Let us see this in practice by adding **Emma** as a developper to our previous
 example.
 
 
-    changedir(workdir)
+    changedir('')
 
 Emma starts by forking the central repository to her own bare repository.
 
@@ -931,9 +941,11 @@ Then Emma clones her bare public repository.
     git clone central-emma-fork.git emma
 
 
+    changedir('emma')
+
+
     %%bash
     
-    changedir('emma')
     git config --local user.name "Emma"
     git config --local user.email emma@inria.fr
 
@@ -952,7 +964,7 @@ Emma creates a topic branch, works on it, and pushes it to her public repository
     git add baz.txt
     git commit -m 'Second line in baz.txt'
     
-    git push central-emma-fork baz:baz
+    git push origin baz:baz
 
 
     changedir('alice')
