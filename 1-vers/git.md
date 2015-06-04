@@ -674,8 +674,6 @@ The remote_name is **origin**, Alice pushes the **master** branch of her reposit
     %%bash
     
     git push origin master:master
-
-
     changedir(workdir)
 
 Bob now clones the central repository too, enters it and configures his name and email:
@@ -689,6 +687,7 @@ Bob now clones the central repository too, enters it and configures his name and
     git config --local user.email bob@inria.fr
 
 Doing so, Bob fetches Alice's work.
+
 
     %%bash
     
@@ -740,6 +739,7 @@ Adding the **-a** option to the **branch** command reveals them:
 A **remote branch** is a read-only branch that reflects the state of a branch of a remote repository. If the branch changes on the remote repository, use **fetch** again to refresh it.
 
 Note: to see only remote branches rather than all branches one can use the -r flag instead of -a:
+
 
     %%%bash
     
@@ -918,7 +918,7 @@ example.
 
 Emma starts by forking the central repository to her own bare repository.
 
-Note: this is a functionnality provided out of the box by GitHub
+Note: this is a functionnality provided out of the box by GitHub.
 
 Then Emma clones her bare public repository.
 
@@ -971,7 +971,7 @@ repository to the list of her remote repositories.
 
 At this point, Alice and Emmma can interact with each other to add more commits
 to the ``baz`` branch. When her work is done, Alice merges it to ``master``, and
-``pushes``
+``pushes``.
 
 
     %%bash
