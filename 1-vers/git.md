@@ -3,6 +3,39 @@
 
 <img src="images/git_commit.png">
 
+Introduction: Git, a distributed Version Control System
+    
+**Part 1: Local version control (only one Git repository)**
+    - The init command
+    - The add, commit and log commands
+    - How it works: working copy, staging area (index) and database.
+    - The diff and status commands
+    - The log command
+    - The checkout command
+    - More on commits
+    - The SHA-1
+    - Git branches
+    - The merge command
+    - What Git branches are
+
+Exercice
+
+**Part 2: Centralized (à la cvs/svn) version control**
+    - The --bare option of the init command
+    - The remote command
+    - The push command
+    - The fetch command
+    - Remote branches
+    - Pushing a (feature) branch
+    - Tracking branch
+    - Visualizing branches
+    
+**Part 3: Distributed workflow**
+ 
+Exercice
+ 
+References
+
 ## Git, a distributed Version Control System
 
 Version control means keeping track of code evlolution by recording
