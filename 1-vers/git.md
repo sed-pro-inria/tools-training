@@ -629,7 +629,8 @@ Alice enters her Git repository and configures her name and email for
 that repository (we assume here she didn't do it at the global level, to
 keep all the examples self-contained):
 
-    cd alice
+
+    changedir('alice')
     git config --local user.name "Alice"
     git config --local user.email alice@inria.fr
 
@@ -683,7 +684,7 @@ Bob now clones the central repository too, enters it and configures his name and
     %%bash
     
     git clone file://$PWD/central.git bob
-    cd bob
+    changedir('bob')
     git config --local user.name "Bob"
     git config --local user.email bob@inria.fr
 
