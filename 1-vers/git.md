@@ -337,14 +337,13 @@ The **log** command prints an history of all the commits.
     %%bash
     git log -p
 
+A common practice when writing commit messages is to start with a 
+one-line description of the commit, optionally followed by a longer
+description which may be split into several paragraphs.
 
-    A common practice when writing commit messages is to start with a 
-    one-line description of the commit, optionally followed by a longer
-    description which may be split into several paragraphs.
-    
-    Another thing one may do when writing commit messages is to explain
-    more why the change is done than the change itself, since the change
-    can be figured out by studying the patch itself.
+Another thing one may do when writing commit messages is to explain
+more why the change is done than the change itself, since the change
+can be figured out by studying the patch itself.
 
 ### The checkout command
 
@@ -630,6 +629,8 @@ that repository (we assume here she didn't do it at the global level, to
 keep all the examples self-contained):
 
 
+    %%bash
+    
     changedir('alice')
     git config --local user.name "Alice"
     git config --local user.email alice@inria.fr
@@ -930,6 +931,8 @@ Then Emma clones her bare public repository.
     git clone central-emma-fork.git emma
 
 
+    %%bash
+    
     changedir('emma')
     git config --local user.name "Emma"
     git config --local user.email emma@inria.fr
