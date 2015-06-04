@@ -564,6 +564,79 @@ demonstrated here will be easy to understand:
     - fast-forward
     - tags (symbolic names which don't move, as opposed to branches)
 
+# Exercice
+
+During the exercice, experiment with `git log`, and `git status`, `git gr`, etc.
+
+0- Initialize an empty Git repository.
+
+1- Create a script `main.py` with the following content, and commit it.
+
+
+    #!/usr/bin/env python
+    
+    def greet():
+        print("Hello world!")
+    
+    greet()
+
+2- Modify the the script, commit it
+
+
+    #!/usr/bin/env python
+    
+    def greet(name):
+        print("Hello %s!" % name)
+    
+    greet("Alice")
+
+3- Modify and commit the script again.
+
+
+    #!/usr/bin/env python
+    import sys
+    
+    def greet(name):
+        print("Hello %s!" % name)
+    
+    if len(sys.argv) > 1:
+        greet(sys.argv[1])
+    else:
+        sys.stderr.write("Usage: %s NAME\n" % sys.argv[0])
+        sys.exit(1)
+
+4- In a branch `format_name`, modify and commit the script:
+
+
+    #!/usr/bin/env python
+    import sys
+    
+    def greet(name):
+        print("Hello %s!" % name.capitalize())
+    
+    if len(sys.argv) > 1:
+        greet(sys.argv[1])
+    else:
+        sys.stderr.write("Usage: %s NAME\n" % sys.argv[0])
+        sys.exit(1)
+
+5- In the `master` branch, modify the script and commit:
+
+
+    #!/usr/bin/env python
+    import sys
+    
+    def greet(name):
+        print("Hello %s! How are you?" % name)
+    
+    if len(sys.argv) > 1:
+        greet(sys.argv[1])
+    else:
+        sys.stderr.write("Usage: %s NAME\n" % sys.argv[0])
+        sys.exit(1)
+
+6- Merge the `format_name` branch. You will have to resolve a conflict, and the commit
+
 ## Centralized (à la cvs/svn) version control
 
 Now that we have learned how to work with a single Git repository, we will learn
@@ -994,6 +1067,20 @@ to the ``baz`` branch. When her work is done, Alice merges it to ``master``, and
     git checkout master
     git merge emma/baz
     git push origin master:master
+
+# Exercice
+
+This exerice continues on the previous one, and re-use its Git repository. This will be the repository of the first developer.
+
+0- Create a bare repository for the first developer.
+
+1- Push existing commits to this repository.
+
+2- Set up a bare repository and a fork for a second developer.
+
+3- The second developer creates a feature branch, and pushes it to its bare repository.
+
+4- The first developer get the feature branch of the second developer, and pushes it to its bare repository.
 
 ## References
 
