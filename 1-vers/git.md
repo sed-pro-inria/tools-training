@@ -1184,3 +1184,5 @@ software development" By Jon Loeliger, Matthew McCullough
   https://github.com/gazler/githug
 
 > Another game: https://github.com/jlord/git-it
+
+> Make your shell prompt git-aware: https://www.github.com/nojhan/liquidprompt
