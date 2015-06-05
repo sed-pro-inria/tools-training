@@ -1057,7 +1057,7 @@ to an external contributor.
 
 Since Git is a distributed revision control system, clloning a
 repository means creating a copy of that repository that has exactly
-as much information. This opens the road to a workflow different rom the
+as much information. This opens the road to a workflow different from the
 previous one, where each developer has a public repository from which
 everybody can read. When this developer wants to share code, he/she
 pushes the code to be shared to his/her public repository and informs
