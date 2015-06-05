@@ -129,6 +129,23 @@ Start by creating a new empty directory to experiment with Git:
     # The directory that will contain the Git repository
     changedir('repo')
 
+### Configuring Git
+
+It is imporant to configure a few things (name, e-mail, editor)
+before starting to use Git. This is done thanks to the following commands:
+
+git config --global user.name "Firstname Lastname"
+
+git config --global user.email firstname.lastname@inria.fr
+
+git config --global core.editor vim
+
+Note: we used the **--global** flag here so that the configuration applies
+to all repositories (it's stored in ~/.gitconfig). It is also possible
+to use the **--local** flag to make a configuration
+repository-specific (stored in ~/repository-path/.git/config). A
+repository-specific configuration overloads the default configuration.
+
 ### The init command
 
 A Git **repository** is created in the current directory using the **init**
@@ -181,36 +198,6 @@ To make sure things have been properly commited, one may use the
     %%bash
     
     git log
-
-As can be seen, the metadata associated with the commit includes its
-author. However, the name or e-mail address printed at the moment
-may not look so pretty. Here is how to improve this for future
-commits:
-
-
-    %%bash
-    
-    # git config --global user.name "Prénom Nom"
-    # git config --global user.email prenom.nom@inria.fr
-
-It is even possible to fix the authorship of our previous commit:
-
-
-    %%bash
-    
-    #git commit --amend --reset-author 
-
-And let's make sure this actually worked:
-
-
-    %%bash
-    
-    git log
-
-Note: we used the **--local** flag here so that the configuration applies
-only to the current repository, but one can also use the **--global** flag to
-make the coniguration the default for all repositories, given that it can
-then be overloaded in each repository.
 
 ### How it works: working copy, staging area (index) and database.
 
@@ -631,7 +618,8 @@ demonstrated here will be easy to understand:
 
 During the exercice, experiment with `git log`, `git status`, `git gr`, etc.
 
-0- Initialize an empty Git repository.
+0- Initialize an empty Git repository (remember, you have to create the
+repository's directory and to change to that directory!).
 
 1- Create a script `main.py` with the following content, and commit it.
 
@@ -643,7 +631,7 @@ During the exercice, experiment with `git log`, `git status`, `git gr`, etc.
     
     greet()
 
-2- Modify the the script, commit it
+2- Modify the script, commit it
 
 
     #!/usr/bin/env python
@@ -698,8 +686,12 @@ During the exercice, experiment with `git log`, `git status`, `git gr`, etc.
         sys.stderr.write("Usage: %s NAME\n" % sys.argv[0])
         sys.exit(1)
 
-6- Merge the `format_name` branch. You will have to resolve a conflict, and the
-commit
+6- Merge the `format_name` branch. You will have to resolve a conflict,
+and then commit
+
+Note: once all the conflicts in a file have been resolved, just add and
+comit that file. There is no need to run the **merge** command again
+to complete the merge or whatever.  
 
 ## Centralized (à la cvs/svn) version control
 
@@ -1156,10 +1148,16 @@ to the ``baz`` branch. When her work is done, Alice merges it to ``master``, and
 
 ## Exercice
 
-This exerice continues on the previous one, and re-use its Git repository. This
+This exerice continues on the previous one, and re-uses its Git repository. This
 will be the repository of the first developer.
 
 0- Create a bare repository for the first developer.
+
+Hint: beware to the difference between **init** and **clone** in terms
+of directories. **init** creates the repository in the current directory,
+meaning that the .git directory will be created in the directory from which
+the command is invoked. **clone** creates a directory for the cloned
+repository and the .git directory will be created in that directory.
 
 1- Push existing commits to this repository.
 
@@ -1168,7 +1166,7 @@ will be the repository of the first developer.
 3- The second developer creates a feature branch, and pushes it to its bare
 repository.
 
-4- The first developer get the feature branch of the second developer, and
+4- The first developer gets the feature branch of the second developer, and
 pushes it to its bare repository.
 
 ## References
